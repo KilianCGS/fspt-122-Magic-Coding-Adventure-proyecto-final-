@@ -164,11 +164,9 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
                     >
                         <h2>Bienvenido a la aventura</h2>
                         <p>
-                            Aquí comienza tu aventura por el mundo del código.
-                            No temas equivocarte, pues la sabiduría va de la mano
-                            con los errores.
+                            Pulsa "Entrar al mundo" si quieres iniciar el juego.
                         </p>
-                        <button type="button" onClick={onStartGame}>
+                        <button type="button" onClick={onStartGame} style={{ background: "#5458a3" }}>
                             Entrar al mundo
                         </button>
                         <button

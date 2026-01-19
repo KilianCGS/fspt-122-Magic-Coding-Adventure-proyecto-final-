@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+/* import { useState } from "react";
 import LoginScreen from "./scenes/LoginScreen/LoginScreen";
 import CustomCursor from "./CustomCursor";
 import "./App.css";
@@ -44,6 +45,27 @@ function App() {
             {inGame && <BeginningChapter />}
 
         </>
+    );
+}
+
+export default App;
+*/
+
+
+import { useState } from "react";
+import LibraryZone from "./scenes/LibraryZone/LibraryZone";
+
+function App() {
+    const [resetKey, setResetKey] = useState(0);
+
+    const handleReset = () => {
+        setResetKey(k => k + 1);
+    };
+
+    return (
+        <div className="app-root">
+            <LibraryZone key={resetKey} onReset={handleReset} />
+        </div>
     );
 }
 
