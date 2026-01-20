@@ -1,0 +1,20 @@
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 2s ease;
+}
+
+.loader-overlay.fade-out {
+  opacity: 0;
+}
+
+.loader-gif {
+  width: 150px;
+  height: 150px;
+}
