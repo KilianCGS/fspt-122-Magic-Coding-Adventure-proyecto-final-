@@ -3,7 +3,7 @@ import './ChatBot.css';
 import hatIcon from '../../assets/images/Chatbox/sombrero magico.png';
 import carolIcon from '../../assets/images/Chatbox/carol.png';
 
-const ChatBot = () => {
+const ChatBot = ({ insideShell }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState([
         { type: 'bot', text: 'Saludos, joven aprendiz. Soy la Archimaga del Código. He venido a guiarte en los misterios de la magia de la programación. ¿Qué deseas aprender hoy?' }
@@ -24,7 +24,6 @@ const ChatBot = () => {
     const handleSendMessage = async (e) => {
         e.preventDefault();
         if (!input.trim()) return;
-
 
         setMessages((prev) => [...prev, { type: 'user', text: input }]);
         setInput('');
@@ -104,12 +103,19 @@ const ChatBot = () => {
     };
 
     return (
-        <div className="chatbot-container">
-            { }
+        <div
+            className="chatbot-container"
+            style={{
+                position: insideShell ? 'absolute' : 'fixed',
+                bottom: insideShell ? '10px' : '20px',
+                right: insideShell ? '10px' : '20px',
+            }}
+        >
             <button
                 className="chatbot-fab"
                 onClick={handleToggle}
                 title="Abre el chat mágico"
+                style={{ position: 'relative', top: 0, right: 0 }}
             >
                 <div className="sparkle-layer">
                     {sparkles.map((sparkle) => (
@@ -131,9 +137,8 @@ const ChatBot = () => {
                 <img src={carolIcon} alt="Carol Icon" className="chatbot-icon" />
             </button>
 
-            { }
             {isOpen && (
-                <div className="chatbot-window">
+                <div className="chatbot-window" style={{ bottom: '110px', right: '0' }}>
                     <div className="chatbot-header">
                         <h3>Asistente Mágico</h3>
                         <button

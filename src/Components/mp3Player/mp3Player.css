@@ -1,0 +1,81 @@
+@import url("https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&display=swap");
+
+
+.audio-container > div {
+  width: 400px;
+  height: 250px;
+  max-width: 450px;
+  max-height: 250px;
+  position: relative;
+}
+
+._wrapper_1sefb_1 {
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.audio-player {
+  width: 100%;
+  height: 100%;
+  padding: 1px;
+  background: transparent;
+  overflow: hidden;
+  font-size: 6px;
+}
+
+/* FUENTE PIXEL GLOBAL */
+.audio-player,
+.audio-player * {
+  font-family: "Pixelify Sans", monospace !important;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+/* CONTENEDOR INTERNO */
+.audio-player .madza-player {
+  width: 100%;
+  max-width: 100%;
+  background: transparent;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* ELIMINA MÁRGENES INTERNOS */
+.audio-player .madza-player > * {
+  margin: 0 !important;
+}
+
+/* TÍTULO */
+.audio-player .track-title {
+  font-size: 7px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* TIEMPO */
+.audio-player .track-time {
+  font-size: 6px;
+}
+
+/* BOTONES */
+.audio-player button {
+  font-size: 6px;
+  padding: 3px;
+  background: #2d2d2d;
+  border: 2px solid #5a5a5a;
+  box-shadow: 2px 2px 0 #000;
+  cursor: pointer;
+}
+
+/* SLIDERS */
+.audio-player input[type="range"] {
+  height: 4px;
+}
+
+/* SEGURIDAD ANTI DESBORDES */
+.audio-player * {
+  max-width: 100%;
+}

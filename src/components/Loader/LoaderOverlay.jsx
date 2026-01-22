@@ -19,6 +19,7 @@ export default function LoaderOverlay({ visible }) {
   return (
     <div className={`loader-overlay ${!visible ? "fade-out" : ""}`}>
       <img src={LoaderGif} alt="Cargando..." className="loader-gif" />
+      <span className="loader-text">Canalizando magia...</span>
     </div>
   );
 }

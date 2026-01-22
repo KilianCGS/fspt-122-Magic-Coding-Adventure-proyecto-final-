@@ -1,8 +1,7 @@
 import { useState } from "react";
 import "./LoginScreen.css";
 import LoginBackground from "../../assets/images/LoginScreenImage.png";
-import Player from "../../Components/Player";
-
+import Player from "../../components/mp3Player/mp3Player"; // minúsculas
 
 const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
     const [mode, setMode] = useState(null);
@@ -74,12 +73,8 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
                 {!loggedIn && (
                     <>
                         <div className="main-buttons">
-                            <button onClick={() => setMode("register")}>
-                                Crear usuario
-                            </button>
-                            <button onClick={() => setMode("login")}>
-                                Iniciar sesión
-                            </button>
+                            <button onClick={() => setMode("register")}>Crear usuario</button>
+                            <button onClick={() => setMode("login")}>Iniciar sesión</button>
                         </div>
 
                         {mode === "register" && (
@@ -165,10 +160,12 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
                         }}
                     >
                         <h2>Bienvenido a la aventura</h2>
-                        <p>
-                            Pulsa "Entrar al mundo" si quieres iniciar el juego.
-                        </p>
-                        <button type="button" onClick={onStartGame} style={{ background: "#5458a3" }}>
+                        <p>Pulsa "Entrar al mundo" si quieres iniciar el juego.</p>
+                        <button
+                            type="button"
+                            onClick={onStartGame}
+                            style={{ background: "#5458a3" }}
+                        >
                             Entrar al mundo
                         </button>
                         <button
@@ -189,7 +186,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
 
                     <div className="player-container">
                         <div className="player-hover">
-                            <button className="music-button"> 🎶 </button>
+                            <button className="music-button"> AUDIO </button>
                             <div className="player">
                                 <div className="player-inner">
                                     <Player />
@@ -204,5 +201,3 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
 };
 
 export default LoginScreen;
-
-
