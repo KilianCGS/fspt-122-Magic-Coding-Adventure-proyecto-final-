@@ -52,21 +52,36 @@ export default App;
 
 
 
-// import { useState } from "react";
-// import LibraryZone from "./scenes/LibraryZone/LibraryZone";
+/*import { useState, useEffect } from "react";
+import LibraryZone from "./scenes/LibraryZone/LibraryZone";
+import AppShell from "./layout/AppShell/AppShell";
+import LoaderOverlay from "./components/Loader/LoaderOverlay";
+import { TimeProvider } from "./context/TimeContext";
 
-// function App() {
-//     const [resetKey, setResetKey] = useState(0);
+function App() {
+    const [loading, setLoading] = useState(true);
 
-//     const handleReset = () => {
-//         setResetKey(k => k + 1);
-//     };
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 2000);
+        return () => clearTimeout(timer);
+    }, []);
 
-//     return (
-//         <div className="app-root">
-//             <LibraryZone key={resetKey} onReset={handleReset} />
-//         </div>
-//     );
-// }
+    return (
+        <TimeProvider>
 
-// export default App;
+            <LoaderOverlay visible={loading} />
+
+
+            <AppShell>
+
+                {!loading && <LibraryZone />}
+            </AppShell>
+        </TimeProvider>
+    );
+}
+
+export default App; */
+
+
