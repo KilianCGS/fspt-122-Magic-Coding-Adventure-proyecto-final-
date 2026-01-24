@@ -25,18 +25,40 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
 
 
     const fakeUsername = "Eva";
-
+    // borrar lo de abajo
     useEffect(() => {
         localStorage.setItem("username", fakeUsername);
     }, []);
+    // borrar hasta aqui
+
+    //cuando haya backend, descomentar lo de abajo y borrar lo de arriba
+    {/*
+    useEffect(() => { 
+        const fetchAvatr = async () =>{
+            const token = localStorage.storage.getItem("token");
+            if (!token) return;
+
+        try{
+            const res = await fetch ("http://localhost:5000/api/avatar", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (res.ok){
+                const data = await res.json();
+                setSavedAvatar(data);
+            }
+                }
+                catch (err){
+                    console.error("Error cargando avatar", err);
+                }
+            };
+        fetchAvatr();
+        }, []);
+        
+        */}
 
 
-
-
-
-
-
-    //hasta aqui
 
     const [mode, setMode] = useState(null);
     const [muted, setMuted] = useState(false);

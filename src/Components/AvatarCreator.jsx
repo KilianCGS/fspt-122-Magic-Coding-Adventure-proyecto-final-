@@ -53,8 +53,6 @@ import fondo4 from "../assets/images/Avatar/Fondos/Fondo-4.png";
 
 
 
-
-
 const ojosOptions = [ojos1, ojos2, ojos3, ojos4, ojos5, ojos6, ojos7];
 const peloOptions = [pelo1, pelo2, pelo3, pelo4, pelo5, pelo6, pelo7, pelo8];
 const ropaOptions = [ropa1, ropa2, ropa3, ropa4, ropa5, ropa6, ropa7, ropa8];
@@ -83,29 +81,32 @@ const AvatarCreator = ({ onClose, onSave }) => {
         }
         onClose();
     };
-    //const saveAvatar = async () => {
-    //const token = localStorage.getItem("token");
 
-    //try {
-    // await fetch("http://localhost:5000/api/avatar", {
-    // method: "POST",
-    //headers: {
-    //  "Content-Type": "application/json",
-    // "Authorization": `Bearer ${token}`
-    // },
-    // body: JSON.stringify(avatar)
-    //});
-    //localStorage.setItem("avatar", JSON.stringify(avatar));
+    // cuando esté el backend listo, descomentar este código y borrar el de arriba 
 
+    {/* const saveAvatar = async () => {
+    const token = localStorage.getItem("token"); 
+    try {
+    const res = await fetch("http://localhost:5000/api/avatar", {
+     method: "PUT",
+     headers: {
+     "Content-Type": "application/json",
+     "Authorization": `Bearer ${token}`
+     },
+    body: JSON.stringify(avatar)
+    });
+    if (!React.ok){
+        throw new error ("Error al guardar avatar");
+    }
+    const updatedAvatar = await res.json();
+    onSave(updatedAvatar);
+    onClose();
+} catch (error){
+    console.error(error);
+}
 
-    // if (onSave) {
-    // onSave(avatar);
-    //}
-
-    //onClose();
-    //} catch (e) {
-    // console.error("Error guardando avatar", e);
-    // } };
+};
+    */ }
 
 
     const changeOjos = (ojos) => {
