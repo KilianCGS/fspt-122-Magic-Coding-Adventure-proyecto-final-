@@ -1,66 +1,12 @@
 import { useState, useEffect } from "react";
 import "./LoginScreen.css";
 import LoginBackground from "../../assets/images/LoginScreenImage.png";
-import Player from "../../Components/Player";
-import Avatar from "../../Components/Avatar";
-import AvatarCreator from "../../Components/AvatarCreator";
+import Player from "../../components/mp3Player/mp3Player";
 
 
 
-import Player from "../../components/mp3Player/mp3Player"; // minúsculas
 
-const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
-
-    //cosas temporales de aqui
-    const [showUserPanel, setShowUserPanel] = useState(false);
-    const [showAvatarCreator, setShowAvatarCreator] = useState(false);
-    const [savedAvatar, setSavedAvatar] = useState(null);
-
-    useEffect(() => {
-        const localAvatar = localStorage.getItem("avatar");
-        console.log("AVATAR EN LOCALSTORAGE:", localAvatar);
-        if (localAvatar) {
-            setSavedAvatar(JSON.parse(localAvatar));
-        }
-    }, []);
-
-
-    const fakeUsername = "Eva";
-    // borrar lo de abajo
-    useEffect(() => {
-        localStorage.setItem("username", fakeUsername);
-    }, []);
-    // borrar hasta aqui
-
-    //cuando haya backend, descomentar lo de abajo y borrar lo de arriba
-    {/*
-    useEffect(() => { 
-        const fetchAvatr = async () =>{
-            const token = localStorage.storage.getItem("token");
-            if (!token) return;
-
-        try{
-            const res = await fetch ("http://localhost:5000/api/avatar", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            if (res.ok){
-                const data = await res.json();
-                setSavedAvatar(data);
-            }
-                }
-                catch (err){
-                    console.error("Error cargando avatar", err);
-                }
-            };
-        fetchAvatr();
-        }, []);
-        
-        */}
-
-
-
+const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
     const [mode, setMode] = useState(null);
     const [muted, setMuted] = useState(false);
     const [formData, setFormData] = useState({
@@ -302,7 +248,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
                 {/*  aqui */}
 
                 <div className="footer-buttons-container">
-                    <button>About us</button>
+                    <button onClick={onAbout}>About us</button>
 
                     <div className="player-container">
                         <div className="player-hover">
