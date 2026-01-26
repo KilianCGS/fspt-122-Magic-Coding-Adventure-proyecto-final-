@@ -12,17 +12,19 @@ function TeamShowcase() {
 
   const mainBackgroundStyle = activeAvatar
     ? {
-        backgroundImage: `url(${activeAvatar.background})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }
+      backgroundImage: `url(${activeAvatar.background})`,
+      backgroundSize: "contain",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      backgroundColor: "#000000",
+    }
     : {
-        backgroundImage: `url(${defaultBackground})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      };
+      backgroundImage: `url(${defaultBackground})`,
+      backgroundSize: "contain",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      backgroundColor: "#000000",
+    };
 
   const handleActivate = (id) => {
     setActiveAvatarId((prevId) => (prevId === id ? null : id));
