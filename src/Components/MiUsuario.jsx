@@ -6,12 +6,24 @@ const MiUsuario = () => {
     const [avatar, setAvatar] = useState(null);
 
     useEffect(() => {
-        const savedAvatar = localStorage.getItem("avatar");
-        if (savedAvatar) {
-            setAvatar(JSON.parse(savedAvatar));
+        const fetchMe = async () => {
+            const token = localStorage.getItem("token");
+            if (!token) return;
+            const res = await fetch("http://127.0.0.1:5000/api/me", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setAvatar(data.avatar);
+            }
+        };
+        fetchMe();
+    },
+        []);
 
-        }
-    }, []);
+
     return (
         <div className="mi-usuario">
             <h1>Mi Usuario</h1>

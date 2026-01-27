@@ -1,6 +1,47 @@
 import { useState, useEffect } from "react";
 import "./LoginScreen.css";
 import LoginBackground from "../../assets/images/LoginScreenImage.png";
+import Avatar from "../../Components/Avatar";
+import AvatarCreator from "../../Components/AvatarCreator";
+
+
+
+import Player from "../../components/mp3Player/mp3Player"; // minúsculas
+
+const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
+
+
+    const [showUserPanel, setShowUserPanel] = useState(false);
+    const [showAvatarCreator, setShowAvatarCreator] = useState(false);
+    const [savedAvatar, setSavedAvatar] = useState(null);
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const fetchMe = async () => {
+            const token = localStorage.getItem("token");
+            if (!token) return;
+            try {
+                const res = await fetch("http://127.0.0.1:5000/api/me", {
+
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                if (!res.ok) return;
+                const data = await res.json();
+                setSavedAvatar(data);
+                setUser(data)
+            } catch (err) {
+                console.error("error cargando usuario", err);
+            }
+        }
+
+        fetchMe();
+    }, []);
+
+
+
+
 import Player from "../../components/mp3Player/mp3Player";
 
 
@@ -27,7 +68,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
             return;
         }
         try {
-            const res = await fetch("http://localhost:5000/api/register", {
+            const res = await fetch("http://127.0.0.1:5000/api/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -48,7 +89,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch("http://localhost:5000/api/login", {
+            const res = await fetch("http://127.0.0.1:5000/api/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -186,7 +227,10 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
                 {/* y de aqui */}
                 {/* <div
                     className="user-badge"
-                    onClick={() => setShowUserPanel(true)}
+                    onClick={() => {
+                        if (!user) return;
+                        setShowUserPanel(true);
+                    }}
                 >
                     {savedAvatar ? (
                         <div className="user-avatar">
@@ -197,10 +241,11 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
                     )}
 
                     <span className="username">
-                        {fakeUsername}
+                        {user ? user.username : ""}
                     </span>
+
                 </div>
-                {showUserPanel && (
+                {showUserPanel && user && (
                     <div className="user-panel-overlay">
                         <div className="user-panel">
                             <button
@@ -220,7 +265,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
                                 )}
                             </div>
 
-                            <p className="user-panel-name">{fakeUsername}</p>
+                            <p className="user-panel-name">{user?.username}</p>
 
                             <button
                                 className="edit-avatar-btn"

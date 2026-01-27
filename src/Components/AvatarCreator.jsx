@@ -74,41 +74,15 @@ const AvatarCreator = ({ onClose, onSave }) => {
     });
 
 
-    const saveAvatar = () => {
+    {/*const saveAvatar = () => {
         localStorage.setItem("avatar", JSON.stringify(avatar));
         if (onSave) {
             onSave(avatar);
         }
         onClose();
     };
-
+*/}
     // cuando esté el backend listo, descomentar este código y borrar el de arriba 
-
-    {/* const saveAvatar = async () => {
-    const token = localStorage.getItem("token"); 
-    try {
-    const res = await fetch("http://localhost:5000/api/avatar", {
-     method: "PUT",
-     headers: {
-     "Content-Type": "application/json",
-     "Authorization": `Bearer ${token}`
-     },
-    body: JSON.stringify(avatar)
-    });
-    if (!React.ok){
-        throw new error ("Error al guardar avatar");
-    }
-    const updatedAvatar = await res.json();
-    onSave(updatedAvatar);
-    onClose();
-} catch (error){
-    console.error(error);
-}
-
-};
-    */ }
-
-
     const changeOjos = (ojos) => {
         setAvatar((prev) => ({ ...prev, ojos }));
     };
@@ -133,18 +107,36 @@ const AvatarCreator = ({ onClose, onSave }) => {
 
 
 
+
+    const saveAvatar = async () => {
+        const token = localStorage.getItem("token");
+        try {
+            const res = await fetch("http://127.0.0.1:5000/api/avatar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(avatar)
+            });
+            if (!res.ok) throw new error("Error al guardar avatar");
+
+            onSave(avatar);
+            onClose();
+        } catch (err) {
+            console.error(err);
+        }
+
+    };
+
     return (
         <div className="avatar-editor-layout">
-            {/*IZQ */}
-
             <div className="avatar-preview">
                 <Avatar {...avatar} />
             </div>
 
-            {/*DER */}
-            <div className="avatar-options">
 
-                {/*tabs */}
+            <div className="avatar-options">
                 <div className="tabs">
                     <button className={`tab ${activeTab === "ojos" ? "active" : ""}`} onClick={() => setActiveTab("ojos")}>Ojos</button>
                     <button className={`tab ${activeTab === "pelo" ? "active" : ""}`} onClick={() => setActiveTab("pelo")}>Pelo</button>
@@ -154,7 +146,7 @@ const AvatarCreator = ({ onClose, onSave }) => {
                     <button className={`tab ${activeTab === "fondo" ? "active" : ""}`} onClick={() => setActiveTab("fondo")}>Fondo</button>
 
                 </div>
-                {/* dentro de tab */}
+
 
                 <div className="options-content">
 
@@ -292,6 +284,7 @@ const AvatarCreator = ({ onClose, onSave }) => {
             </div>
         </div>
     )
-};
+}
+
 
 export default AvatarCreator;
