@@ -42,7 +42,12 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
 
 
 
+import Player from "../../components/mp3Player/mp3Player";
 
+
+
+
+const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
     const [mode, setMode] = useState(null);
     const [muted, setMuted] = useState(false);
     const [formData, setFormData] = useState({
@@ -220,7 +225,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
                     </div>
                 )}
                 {/* y de aqui */}
-                <div
+                {/* <div
                     className="user-badge"
                     onClick={() => {
                         if (!user) return;
@@ -285,10 +290,10 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
                         </div>
                     </div>
                 )}
-                {/*  aqui */}
+                 aqui */}
 
                 <div className="footer-buttons-container">
-                    <button>About us</button>
+                    <button onClick={onAbout}>About us</button>
 
                     <div className="player-container">
                         <div className="player-hover">
