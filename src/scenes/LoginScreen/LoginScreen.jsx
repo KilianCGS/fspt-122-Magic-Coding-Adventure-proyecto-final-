@@ -3,18 +3,27 @@ import "./LoginScreen.css";
 import LoginBackground from "../../assets/images/LoginScreenImage.png";
 import Avatar from "../../Components/Avatar";
 import AvatarCreator from "../../Components/AvatarCreator";
-
-
-
 import Player from "../../components/mp3Player/mp3Player"; // minúsculas
+import muneco from "../../assets/images/Avatar/Avatar/Muneco.png";
+import fondo1 from "../../assets/images/Avatar/Fondos/Fondo-1.png";
 
-const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
 
+const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
 
+    const [mode, setMode] = useState(null);
     const [showUserPanel, setShowUserPanel] = useState(false);
     const [showAvatarCreator, setShowAvatarCreator] = useState(false);
-    const [savedAvatar, setSavedAvatar] = useState(null);
+
+
     const [user, setUser] = useState(null);
+    const [avatar, setAvatar] = useState(null);
+
+    const [formData, setFormData] = useState({
+        username: "",
+        password: "",
+        repeatPassword: "",
+        email: "",
+    });
 
     useEffect(() => {
         const fetchMe = async () => {
@@ -28,9 +37,16 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
                     },
                 });
                 if (!res.ok) return;
+
                 const data = await res.json();
-                setSavedAvatar(data);
-                setUser(data)
+                setAvatar({
+                    muneco,
+                    fondo: fondo1,
+                    ...data.avatar
+                });
+                setUser(data);
+                onLogin?.(me.username);
+
             } catch (err) {
                 console.error("error cargando usuario", err);
             }
@@ -39,23 +55,6 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
         fetchMe();
     }, []);
 
-
-
-
-import Player from "../../components/mp3Player/mp3Player";
-
-
-
-
-const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
-    const [mode, setMode] = useState(null);
-    const [muted, setMuted] = useState(false);
-    const [formData, setFormData] = useState({
-        username: "",
-        password: "",
-        repeatPassword: "",
-        email: "",
-    });
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -79,8 +78,20 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.msg || "Error al registrar");
+
             localStorage.setItem("token", data.access_token);
-            onLogin(formData.username);
+
+
+            const meRes = await fetch("http://127.0.0.1:5000/api/me", {
+                headers: {
+                    Authorization: `Bearer ${data.access_token}`,
+                }
+            });
+            const me = await meRes.json();
+            setUser(me);
+            setAvatar(me.avatar);
+            onLogin?.(me.username);
+            setMode(null);
         } catch (err) {
             alert(err.message);
         }
@@ -91,7 +102,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
         try {
             const res = await fetch("http://127.0.0.1:5000/api/login", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-type": "application/json" },
                 body: JSON.stringify({
                     username: formData.username,
                     password: formData.password,
@@ -100,17 +111,26 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
             const data = await res.json();
             if (!res.ok) throw new Error(data.msg || "Error al loguear");
             localStorage.setItem("token", data.access_token);
-            onLogin(formData.username);
+            // onLogin(formData.username);
+
+            const meRes = await fetch("http://127.0.0.1:5000/api/me", {
+                headers: {
+                    Authorization: `Bearer ${data.access_token}`,
+                },
+            })
+            const me = await meRes.json();
+            setAvatar(me.avatar)
+            setUser(me);
+            onLogin?.(me.username);
+            setMode(null);
+
         } catch (err) {
             alert(err.message);
         }
     };
 
     return (
-        <div
-            className="login-screen"
-            style={{ backgroundImage: `url(${LoginBackground})` }}
-        >
+        <div className="login-screen" style={{ backgroundImage: `url(${LoginBackground})` }}>
             <div className="overlay">
                 <h1 className="title">Magic Coding Adventure</h1>
 
@@ -123,13 +143,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
 
                         {mode === "register" && (
                             <form className="panel" onSubmit={handleRegister}>
-                                <button
-                                    type="button"
-                                    className="close-btn"
-                                    onClick={() => setMode(null)}
-                                >
-                                    ✕
-                                </button>
+                                <button type="button" className="close-btn" onClick={() => setMode(null)}>✕</button>
                                 <h2>Crear usuario</h2>
                                 <input
                                     type="text"
@@ -224,80 +238,53 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
                         </button>
                     </div>
                 )}
-                {/* y de aqui */}
-                {/* <div
-                    className="user-badge"
-                    onClick={() => {
-                        if (!user) return;
-                        setShowUserPanel(true);
-                    }}
-                >
-                    {savedAvatar ? (
-                        <div className="user-avatar">
-                            <Avatar {...savedAvatar} />
-                        </div>
-                    ) : (
-                        <div className="user-avatar placeholder" />
-                    )}
-
-                    <span className="username">
-                        {user ? user.username : ""}
-                    </span>
-
+                <div
+                    className="user-badge" onClick={() => user && setShowUserPanel(true)}>
+                    {avatar ? <Avatar {...avatar} /> : <div className="user-avatar placeholder" />}
+                    <span>{user?.username}</span>
                 </div>
-                {showUserPanel && user && (
+
+                {showUserPanel && (
                     <div className="user-panel-overlay">
                         <div className="user-panel">
-                            <button
-                                className="close-user-panel"
-                                onClick={() => setShowUserPanel(false)}
-                            >
-                                ✕
-                            </button>
-
-                            <h2>Mi usuario</h2>
-
-                            <div className="user-panel-avatar">
-                                {savedAvatar ? (
-                                    <Avatar {...savedAvatar} />
-                                ) : (
-                                    <div className="user-avatar placeholder" />
-                                )}
-                            </div>
-
-                            <p className="user-panel-name">{user?.username}</p>
-
-                            <button
-                                className="edit-avatar-btn"
-                                onClick={() => setShowAvatarCreator(true)}
-                            >
-                                Editar avatar
-                            </button>
-
-                            {showAvatarCreator && (
-                                <div className="modal-overlay">
-                                    <div className="modal-content">
-                                        <button onClick={() => setShowAvatarCreator(false)}>x</button>
-                                        <AvatarCreator
-                                            onClose={() => setShowAvatarCreator(false)}
-                                            onSave={(avatar) => {
-                                                setSavedAvatar(avatar);
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                            )}
+                            <button className="boton-mu" onClick={() => setShowUserPanel(false)}>X</button>
+                            {avatar ? <Avatar {...avatar} /> : <div className="user-avatar-placeholder" />}
+                            <p>{user.username}</p>
+                            <button onClick={() => {
+                                setShowUserPanel(false);
+                                setShowAvatarCreator(true);
+                            }}
+                            >Editar Avatar</button>
                         </div>
                     </div>
                 )}
-                 aqui */}
+                {showAvatarCreator && (
+                    <div className="avatar-editor-overlay">
+                        <div className="avatar-creator-modal">
+                            <AvatarCreator
+                                initialAvatar={avatar}
+                                onSave={async (newAvatar) => {
+                                    setAvatar({
+                                        muneco,
+                                        fondo: fondo1,
+                                        ...newAvatar,
+                                    });
+
+
+                                    setShowAvatarCreator(false);
+                                }}
+                                onClose={() => setShowAvatarCreator(false)}
+                            />
+                        </div>
+                    </div>
+                )}
 
                 <div className="footer-buttons-container">
                     <button onClick={onAbout}>About us</button>
 
                     <div className="player-container">
                         <div className="player-hover">
-                            <button className="music-button"> AUDIO </button>
+                            <button className="music-button"> 🎵 </button>
                             <div className="player">
                                 <div className="player-inner">
                                     <Player />
@@ -306,10 +293,14 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
                         </div>
                     </div>
                 </div>
-
             </div>
-        </div >
+        </div>
+
     );
 };
 
+
 export default LoginScreen;
+
+
+

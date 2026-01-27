@@ -9,10 +9,12 @@ import CustomCursor from "./CustomCursor";
 
 
 
+
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [inGame, setInGame] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
+  const [username, setUsername] = useState(null);
 
   return (
     <>
@@ -24,6 +26,8 @@ function App() {
           onStartGame={() => setInGame(true)}
           onLogout={() => setLoggedIn(false)}
           onAbout={() => setShowAbout(true)}
+          onLogin={() => setLoggedIn(true)}
+
         />
       )}
 
