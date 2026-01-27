@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import "./LoginScreen.css";
 import LoginBackground from "../../assets/images/LoginScreenImage.png";
-import Player from "../../Components/Player";
 import Avatar from "../../Components/Avatar";
 import AvatarCreator from "../../Components/AvatarCreator";
 
@@ -11,53 +10,36 @@ import Player from "../../components/mp3Player/mp3Player"; // minúsculas
 
 const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
 
-    //cosas temporales de aqui
+
     const [showUserPanel, setShowUserPanel] = useState(false);
     const [showAvatarCreator, setShowAvatarCreator] = useState(false);
     const [savedAvatar, setSavedAvatar] = useState(null);
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const localAvatar = localStorage.getItem("avatar");
-        console.log("AVATAR EN LOCALSTORAGE:", localAvatar);
-        if (localAvatar) {
-            setSavedAvatar(JSON.parse(localAvatar));
-        }
-    }, []);
-
-
-    const fakeUsername = "Eva";
-    // borrar lo de abajo
-    useEffect(() => {
-        localStorage.setItem("username", fakeUsername);
-    }, []);
-    // borrar hasta aqui
-
-    //cuando haya backend, descomentar lo de abajo y borrar lo de arriba
-    {/*
-    useEffect(() => { 
-        const fetchAvatr = async () =>{
-            const token = localStorage.storage.getItem("token");
+        const fetchMe = async () => {
+            const token = localStorage.getItem("token");
             if (!token) return;
+            try {
+                const res = await fetch("http://127.0.0.1:5000/api/me", {
 
-        try{
-            const res = await fetch ("http://localhost:5000/api/avatar", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            if (res.ok){
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                if (!res.ok) return;
                 const data = await res.json();
                 setSavedAvatar(data);
+                setUser(data)
+            } catch (err) {
+                console.error("error cargando usuario", err);
             }
-                }
-                catch (err){
-                    console.error("Error cargando avatar", err);
-                }
-            };
-        fetchAvatr();
-        }, []);
-        
-        */}
+        }
+
+        fetchMe();
+    }, []);
+
+
 
 
 
@@ -81,7 +63,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
             return;
         }
         try {
-            const res = await fetch("http://localhost:5000/api/register", {
+            const res = await fetch("http://127.0.0.1:5000/api/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -102,7 +84,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch("http://localhost:5000/api/login", {
+            const res = await fetch("http://127.0.0.1:5000/api/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -240,7 +222,10 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
                 {/* y de aqui */}
                 <div
                     className="user-badge"
-                    onClick={() => setShowUserPanel(true)}
+                    onClick={() => {
+                        if (!user) return;
+                        setShowUserPanel(true);
+                    }}
                 >
                     {savedAvatar ? (
                         <div className="user-avatar">
@@ -251,10 +236,11 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
                     )}
 
                     <span className="username">
-                        {fakeUsername}
+                        {user ? user.username : ""}
                     </span>
+
                 </div>
-                {showUserPanel && (
+                {showUserPanel && user && (
                     <div className="user-panel-overlay">
                         <div className="user-panel">
                             <button
@@ -274,7 +260,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
                                 )}
                             </div>
 
-                            <p className="user-panel-name">{fakeUsername}</p>
+                            <p className="user-panel-name">{user?.username}</p>
 
                             <button
                                 className="edit-avatar-btn"
