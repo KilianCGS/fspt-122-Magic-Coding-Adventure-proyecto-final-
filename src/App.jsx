@@ -1,5 +1,5 @@
-
-/*import { useState } from "react";
+/* 
+import { useState } from "react";
 import LoginScreen from "./scenes/LoginScreen/LoginScreen";
 import CustomCursor from "./CustomCursor";
 import "./App.css";
@@ -48,7 +48,7 @@ function App() {
     );
 }
 
-export default App;
+export default App; */
 
 // ----------------------------------------------------------------------------
 
@@ -57,6 +57,8 @@ import LibraryZone from "./scenes/LibraryZone/LibraryZone";
 import AppShell from "./layout/AppShell/AppShell";
 import LoaderOverlay from "./components/Loader/LoaderOverlay";
 import { TimeProvider } from "./context/TimeContext";
+import { GameOverProvider } from "./context/GameOverContext";
+import GameOverModal from "./components//GameOverModal/GameOverModal";
 
 function App() {
     const [loading, setLoading] = useState(true);
@@ -69,16 +71,15 @@ function App() {
     }, []);
 
     return (
-        <TimeProvider>
-
-            <LoaderOverlay visible={loading} />
-
-
-            <AppShell>
-
-                {!loading && <LibraryZone />}
-            </AppShell>
-        </TimeProvider>
+        <GameOverProvider>
+            <TimeProvider>
+                <LoaderOverlay visible={loading} />
+                <AppShell>
+                    {!loading && <LibraryZone />}
+                </AppShell>
+                <GameOverModal />
+            </TimeProvider>
+        </GameOverProvider>
     );
 }
 
@@ -87,18 +88,19 @@ export default App;
 
 
 
+//---------------------------------
 
 
-import StackScreen from "./scenes/StackScreen/StackScreen";
+/* import StackScreen from "./scenes/StackScreen/StackScreen";
 
 function App() {
     return <StackScreen />;
 }
 
-export default App; */
+export default App;  */
+//-----------------------------------
 
-
-import { useState, useEffect } from "react";
+/*import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useNavigate, Navigate } from "react-router-dom";
 
 import LoginScreen from "./scenes/LoginScreen/LoginScreen";
@@ -148,11 +150,25 @@ function AppRoutes() {
     const handleEnterWorld = () => {
         showLoaderAndNavigate(scrollSigned ? "/stacks" : "/beginning");
     };
+    const handleFinishBeginning = async () => {
+        setLoading(true);
 
-    const handleFinishBeginning = () => {
-        localStorage.setItem("scrollSigned", "true");
-        setScrollSigned(true);
-        showLoaderAndNavigate("/stacks");
+        try {
+            await fetch("http://localhost:5000/api/sign-scroll", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            setScrollSigned(true);
+            showLoaderAndNavigate("/stacks");
+
+        } catch (err) {
+            console.error("Error al firmar el pergamino", err);
+            setLoading(false);
+        }
     };
 
     return (
@@ -216,4 +232,5 @@ export default function App() {
             <AppRoutes />
         </BrowserRouter>
     );
-}
+} 
+ */

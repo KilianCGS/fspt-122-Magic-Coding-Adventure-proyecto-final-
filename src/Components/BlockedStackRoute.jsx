@@ -5,8 +5,8 @@ export default function BlockedStackRoute({ onBlocked }) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        onBlocked();              // abre el modal
-        navigate("/stacks", { replace: true }); // vuelve al stack
+        onBlocked();
+        navigate("/stacks", { replace: true });
     }, []);
 
     return null;
