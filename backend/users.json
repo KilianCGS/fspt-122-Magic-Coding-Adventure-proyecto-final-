@@ -24,12 +24,12 @@
     "email": "aa@hotmail.com",
     "avatar": {
       "muneco": "/src/assets/images/Avatar/Avatar/Muneco.png",
-      "ojos": "/src/assets/images/Avatar/Ojos/Ojos-2.png",
+      "ojos": "/src/assets/images/Avatar/Ojos/Ojos-4.png",
       "pelo": null,
       "ropa": "/src/assets/images/Avatar/Ropa/Ropa-8.png",
       "accesorio": "/src/assets/images/Avatar/Accesorios/Accesorio-8.png",
-      "gorro": "/src/assets/images/Avatar/Gorros/Gorro-1.png",
-      "fondo": "/src/assets/images/Avatar/Fondos/fondo-4.png"
+      "gorro": "/src/assets/images/Avatar/Gorros/Gorro-3.png",
+      "fondo": "/src/assets/images/Avatar/Fondos/fondo-3.png"
     }
   },
   "eva11": {
@@ -37,12 +37,12 @@
     "email": "eva@hotmail.com",
     "avatar": {
       "muneco": "/src/assets/images/Avatar/Avatar/Muneco.png",
-      "ojos": "/src/assets/images/Avatar/Ojos/Ojos-1.png",
-      "pelo": null,
+      "ojos": "/src/assets/images/Avatar/Ojos/Ojos-6.png",
+      "pelo": "/src/assets/images/Avatar/Pelo/Pelo-8.png",
       "ropa": "/src/assets/images/Avatar/Ropa/Ropa-4.png",
-      "accesorio": null,
+      "accesorio": "/src/assets/images/Avatar/Accesorios/Accesorio-6.png",
       "gorro": "/src/assets/images/Avatar/Gorros/Gorro-2.png",
-      "fondo": "/src/assets/images/Avatar/Fondos/fondo-1.png"
+      "fondo": "/src/assets/images/Avatar/Fondos/fondo-2.png"
     }
   }
 }
