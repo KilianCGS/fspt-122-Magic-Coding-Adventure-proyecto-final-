@@ -55,6 +55,16 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
         fetchMe();
     }, []);
 
+    useEffect(() => {
+        if (!loggedIn) {
+            setUser(null);
+            setAvatar(null);
+            setShowUserPanel(false)
+            setShowAvatarCreator(false);
+            setMode(null)
+        }
+    }, [loggedIn])
+
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
