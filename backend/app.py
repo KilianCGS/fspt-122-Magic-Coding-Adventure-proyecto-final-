@@ -5,7 +5,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import get_jwt_identity
 
 app = Flask(__name__)
-CORS(app)
+
+
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000"], "supports_credentials": True}})
+
 app.config["JWT_SECRET_KEY"] = "supersecretkey"
 
 jwt = JWTManager(app)
@@ -51,7 +54,7 @@ def login():
 def protected():
     return jsonify(msg="Acceso permitido al usuario autenticado")
 
-#avatar endpoint 
+
 
 @app.route("/api/avatar", methods=["POST"])
 @jwt_required()

@@ -1,53 +1,14 @@
 import { useState, useEffect } from "react";
 import "./LoginScreen.css";
 import LoginBackground from "../../assets/images/LoginScreenImage.png";
-import Avatar from "../../Components/Avatar";
-import AvatarCreator from "../../Components/AvatarCreator";
-
-
-
-import Player from "../../components/mp3Player/mp3Player"; // minúsculas
-
-const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
-
-
-    const [showUserPanel, setShowUserPanel] = useState(false);
-    const [showAvatarCreator, setShowAvatarCreator] = useState(false);
-    const [savedAvatar, setSavedAvatar] = useState(null);
-    const [user, setUser] = useState(null);
-
-    useEffect(() => {
-        const fetchMe = async () => {
-            const token = localStorage.getItem("token");
-            if (!token) return;
-            try {
-                const res = await fetch("http://127.0.0.1:5000/api/me", {
-
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                if (!res.ok) return;
-                const data = await res.json();
-                setSavedAvatar(data);
-                setUser(data)
-            } catch (err) {
-                console.error("error cargando usuario", err);
-            }
-        }
-
-        fetchMe();
-    }, []);
-
-
-
-
+import Avatar from "../../components/Avatar";
+import AvatarCreator from "../../components/AvatarCreator";
 import Player from "../../components/mp3Player/mp3Player";
 
 
 
 
-const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
+const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout, onQuizz }) => {
     const [mode, setMode] = useState(null);
     const [muted, setMuted] = useState(false);
     const [formData, setFormData] = useState({
@@ -68,7 +29,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
             return;
         }
         try {
-            const res = await fetch("http://127.0.0.1:5000/api/register", {
+            const res = await fetch("http://127.0.0.1:3001/api/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -89,7 +50,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch("http://127.0.0.1:5000/api/login", {
+            const res = await fetch("http://127.0.0.1:3001/api/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -119,6 +80,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
                         <div className="main-buttons">
                             <button onClick={() => setMode("register")}>Crear usuario</button>
                             <button onClick={() => setMode("login")}>Iniciar sesión</button>
+                            <button onClick={onQuizz} style={{ background: "#9333ea" }}>Jugar Quiz (Demo)</button>
                         </div>
 
                         {mode === "register" && (
@@ -211,6 +173,16 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
                             style={{ background: "#5458a3" }}
                         >
                             Entrar al mundo
+                        </button>
+                        <button
+                            type="button"
+                            onClick={onQuizz}
+                            style={{
+                                marginTop: "20px",
+                                background: "#9333ea",
+                            }}
+                        >
+                            Jugar Quiz
                         </button>
                         <button
                             type="button"
