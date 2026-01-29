@@ -17,10 +17,10 @@ const STACKS = [
     { id: "react", title: "El castillo cambiante", image: ReactStack, unlocked: false }
 ];
 
-export default function StackScreen({ onBackToMenu }) {
+export default function StackScreen({ onBackToMenu, onStart }) {
     const handleStart = (stackId) => {
         if (stackId === "html") {
-            console.log("Ir al mapa de HTML");
+            onStart();
         }
     };
 
@@ -43,7 +43,6 @@ export default function StackScreen({ onBackToMenu }) {
                         {stack.unlocked ? (
                             <button onClick={() => handleStart(stack.id)}>
                                 Comenzar
-
                             </button>
                         ) : (
                             <button className="locked-btn">🔒</button>
