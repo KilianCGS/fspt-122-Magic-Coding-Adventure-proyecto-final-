@@ -1,34 +1,62 @@
-import { useState, useEffect } from "react";
-import LibraryZone from "./scenes/LibraryZone/LibraryZone";
-import AppShell from "./layout/AppShell/AppShell";
-import LoaderOverlay from "./components/Loader/LoaderOverlay";
-import { TimeProvider } from "./context/TimeContext";
-import { GameOverProvider } from "./context/GameOverContext";
-import GameOverModal from "./components/GameOverModal/GameOverModal";
+import { useState } from "react";
+
+import StackScreen from "./scenes/StackScreen/StackScreen";
+import WorldScene from "./scenes/WorldScenes/WorldScene";
+import MinigameMock from "./scenes/MinigameMock/MinigameMock";
+import LoaderOverlay from "./components/loader/LoaderOverlay";
 
 function App() {
-    const [loading, setLoading] = useState(true);
+    const [screen, setScreen] = useState("stack");
+    const [loading, setLoading] = useState(false);
+    const [activeZone, setActiveZone] = useState(null);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
+    const goToWorld = () => {
+        setLoading(true);
+        setTimeout(() => {
+            setScreen("world");
             setLoading(false);
-        }, 2000);
+        }, 800);
+    };
 
-        return () => clearTimeout(timer);
-    }, []);
+    const goToMinigame = (zoneId) => {
+        setActiveZone(zoneId);
+        setLoading(true);
+        setTimeout(() => {
+            setScreen("minigame");
+            setLoading(false);
+        }, 800);
+    };
+
+    const backToWorld = () => {
+        setLoading(true);
+        setTimeout(() => {
+            setScreen("world");
+            setLoading(false);
+        }, 800);
+    };
 
     return (
-        <GameOverProvider>
-            <TimeProvider>
-                <LoaderOverlay visible={loading} />
+        <>
+            {screen === "stack" && (
+                <StackScreen onStart={goToWorld} />
+            )}
 
-                <AppShell>
-                    {!loading && <LibraryZone />}
-                </AppShell>
+            {screen === "world" && (
+                <WorldScene
+                    onBack={() => setScreen("stack")}
+                    onEnterZone={goToMinigame}
+                />
+            )}
 
-                <GameOverModal />
-            </TimeProvider>
-        </GameOverProvider>
+            {screen === "minigame" && (
+                <MinigameMock
+                    zoneId={activeZone}
+                    onExit={backToWorld}
+                />
+            )}
+
+            <LoaderOverlay visible={loading} />
+        </>
     );
 }
 
