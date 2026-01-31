@@ -1,89 +1,140 @@
-// MINIJUEGO DE LIBRERÍA
-/*
-import { useState, useEffect } from "react";
-import LibraryZone from "./scenes/LibraryZone/LibraryZone";
-import AppShell from "./layout/AppShell/AppShell";
+/* import { useEffect, useState } from "react";
+
+import LoginScreen from "./scenes/LoginScreen/LoginScreen";
+import BeginningChapter from "./scenes/BeginningChapter/BeginningChapter";
+import StackScreen from "./scenes/StackScreen/StackScreen";
 import LoaderOverlay from "./components/Loader/LoaderOverlay";
-import { TimeProvider } from "./context/TimeContext";
-import { GameOverProvider } from "./context/GameOverContext";
-import GameOverModal from "./components/GameOverModal/GameOverModal";
 
 function App() {
-    const [loading, setLoading] = useState(true);
+    const [screen, setScreen] = useState("login");
+    const [loggedIn, setLoggedIn] = useState(false);
+    const [scrollSigned, setScrollSigned] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const goWithLoader = (nextScreen) => {
+        setLoading(true);
+        setTimeout(() => {
+            setScreen(nextScreen);
+            setLoading(false);
+        }, 1200);
+    };
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 2000);
+        const token = localStorage.getItem("token");
+        if (!token) return;
 
-        return () => clearTimeout(timer);
+        fetch("http://127.0.0.1:5000/api/me", {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then(res => res.ok ? res.json() : null)
+            .then(data => {
+                if (!data) return;
+                setLoggedIn(true);
+                setScrollSigned(data.scroll_signed);
+                setScreen("login");
+            });
     }, []);
 
-    return (
-        <GameOverProvider>
-            <TimeProvider>
+    const handleStartGame = () => {
+        if (scrollSigned) {
+            goWithLoader("stack");
+        } else {
+            setScreen("beginning");
+        }
+    };
+
+    if (screen === "login") {
+        return (
+            <>
                 <LoaderOverlay visible={loading} />
+                <LoginScreen
+                    loggedIn={loggedIn}
+                    onLogin={() => setLoggedIn(true)}
+                    onLogout={() => {
+                        localStorage.removeItem("token");
+                        setLoggedIn(false);
+                        setScrollSigned(false);
+                        setScreen("login");
+                    }}
+                    onStartGame={handleStartGame}
+                />
+            </>
+        );
+    }
 
-                <AppShell>
-                    {!loading && <LibraryZone />}
-                </AppShell>
-
-                <GameOverModal />
-            </TimeProvider>
-        </GameOverProvider>
-    );
-}
-
-export default App;  */
-//-----------------------------------------------------------------------------------------------------------------------------
-
-// MINIJUEGO DE CRUCIGRAMA
-
-/*
-import { useState, useEffect } from "react";
-import AlchemyZone from "./scenes/AlchemyZone/AlchemyZone";
-import AppShell from "./layout/AppShell/AppShell";
-import LoaderOverlay from "./components/Loader/LoaderOverlay";
-import { TimeProvider } from "./context/TimeContext";
-import { GameOverProvider } from "./context/GameOverContext";
-import GameOverModal from "./components/GameOverModal/GameOverModal";
-
-function App() {
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 2000);
-
-        return () => clearTimeout(timer);
-    }, []);
-
-    return (
-        <GameOverProvider>
-            <TimeProvider>
+    if (screen === "beginning") {
+        return (
+            <>
                 <LoaderOverlay visible={loading} />
+                <BeginningChapter
+                    onFinish={() => {
+                        setScrollSigned(true);
+                        goWithLoader("stack");
+                    }}
+                />
+            </>
+        );
+    }
 
-                <AppShell>
-                    {!loading && <AlchemyZone />}
-                </AppShell>
+    if (screen === "stack") {
+        return (
+            <>
+                <LoaderOverlay visible={loading} />
+                <StackScreen
+                    onStart={() => {
+                        console.log("Aquí irá el mapa");
+                    }}
+                    onBackToMenu={() => {
+                        setScreen("login");
+                    }}
+                />
+            </>
+        );
+    }
 
-                <GameOverModal />
-            </TimeProvider>
-        </GameOverProvider>
-    );
+    return null;
 }
 
 export default App; */
 
-//-----------------------------------------------------------------------------------------------------------------------------
 
-import Iframe from "./scenes/StudyZone/Iframe";
+//------------------------------------------------------------------
+
+
+
+/* import AppShell from "./layout/AppShell/AppShell";
+import AlchemyZone from "./scenes/AlchemyZone/AlchemyZone";
+
+import { InventoryProvider } from "./context/InventoryContext";
+import { TimeProvider } from "./context/TimeContext";
+import { GameOverProvider } from "./context/GameOverContext";
+import { IdleProvider } from "./context/IdleContext";
 
 function App() {
     return (
-        <Iframe />
+        <IdleProvider>
+            <GameOverProvider>
+                <TimeProvider>
+                    <InventoryProvider>
+                        <AppShell onExitZone={() => { }}>
+                            <AlchemyZone />
+                        </AppShell>
+                    </InventoryProvider>
+                </TimeProvider>
+            </GameOverProvider>
+        </IdleProvider>
     );
 }
 
-export default App; 
+export default App;  */
+
+import BeginningChapter from "./scenes/BeginningChapter/BeginningChapter";
+
+function App() {
+    return <BeginningChapter />;
+
+}
+
+export default App;

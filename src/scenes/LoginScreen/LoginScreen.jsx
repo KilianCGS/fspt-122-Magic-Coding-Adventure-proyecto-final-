@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import "./LoginScreen.css";
 import LoginBackground from "../../assets/images/LoginScreenImage.png";
-import Avatar from "../../Components/Avatar";
-import AvatarCreator from "../../Components/AvatarCreator";
+import Avatar from "../../components/Avatar";
+import AvatarCreator from "../../components/AvatarCreator";
 import Player from "../../components/mp3Player/mp3Player";
 import ChatBot from "../../components/ChatBot/ChatBot";
 import muneco from "../../assets/images/Avatar/Avatar/Muneco.png";
@@ -136,7 +136,6 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
             if (!res.ok) throw new Error(data.msg);
 
             localStorage.setItem("token", data.access_token);
-            // onLogin(formData.username);
 
             const meRes = await fetch("http://127.0.0.1:5000/api/me", {
                 headers: {
