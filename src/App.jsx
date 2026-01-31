@@ -5,8 +5,9 @@ import BeginningChapter from "./scenes/BeginningChapter/BeginningChapter";
 import TeamShowcase from "./components/AboutUs/TeamShowcase/TeamShowcase";
 import CustomCursor from "./CustomCursor";
 import { IdleProvider } from "./context/IdleContext";
-import AppLayout from "./layout/AppLayout";
+import MusicLayout from "./layout/MusicLayout";
 import { GameOverProvider } from "./context/GameOverContext";
+
 
 
 
@@ -24,7 +25,7 @@ function App() {
         <GameOverProvider>
             <IdleProvider>
                 <CustomCursor />
-                <AppLayout>
+                <MusicLayout>
 
                     {!inGame && !showAbout && (
                         <LoginScreen
@@ -42,7 +43,7 @@ function App() {
                     )}
 
                     {inGame && <BeginningChapter />}
-                </AppLayout>
+                </MusicLayout>
             </IdleProvider>
         </GameOverProvider>
 
