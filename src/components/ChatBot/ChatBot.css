@@ -4,7 +4,6 @@
   height: fit-content;
   font-family: inherit;
   z-index: 999;
-  
 }
 
 .chatbot-fab {
@@ -38,8 +37,6 @@
   border: 5px, solid, rgb(29, 133, 219);
   border-radius: 50%;
   background-color: rgb(241, 213, 149);
-
-  
 }
 
 .sparkle-layer {
@@ -392,6 +389,7 @@
 }
 
 .idle-mensaje {
+  padding: 10px;
   position: fixed;
   bottom: 130px;
   right: 40px;
