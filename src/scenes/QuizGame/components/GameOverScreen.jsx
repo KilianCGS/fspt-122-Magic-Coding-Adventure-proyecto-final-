@@ -42,11 +42,11 @@ const GameOverScreen = ({ score, total, stars, onReset, onExit, reason }) => {
 
                 <div className="game-over-stats">
                     <div className="game-over-stat-item">
-                        <span className="stat-label">Pociones Obtenidas</span>
+                        <span className="stat-label">Respuestas Correctas</span>
                         <span className="stat-value">{score} / {total}</span>
                     </div>
                     <div className="game-over-stat-item">
-                        <span className="stat-label">Porcentaje</span>
+                        <span className="stat-label">Porcentaje de Aciertos</span>
                         <span className="stat-value">{Math.round((score / total) * 100)}%</span>
                     </div>
                 </div>
