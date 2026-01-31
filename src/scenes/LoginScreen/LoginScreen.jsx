@@ -13,6 +13,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
 
     const [mode, setMode] = useState(null);
 
+
     const [formData, setFormData] = useState({
         username: "",
         password: "",

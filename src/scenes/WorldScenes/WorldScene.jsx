@@ -23,7 +23,7 @@ const SPARK_COUNT = 24;
 
 const GITAGORAS_FALLBACK = [
   "¡Saludos, aprendiz! Soy Gitágoras. Ahora mismo estoy MUY ocupado.",
-  "Estoy ‘alineando los astros del código’... o sea, depurando errores otra vez.",
+  "Estoy 'alineando los astros del código'... o sea, depurando errores otra vez.",
   "Si ves humo azul en la torre, es normal: es mi café encantado.",
   "Vuelve luego, aprendiz. Mientras tanto, no toques nada que brille... salvo tu curiosidad."
 ];
@@ -370,6 +370,9 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
             height={BASE_HEIGHT}
             className="worldscene-canvas"
           />
+          <button onClick={onBack} className="worldscene-back">
+            BACK
+          </button>
           {showGitagoras && (
             <div className="worldscene-overlay">
               <button
