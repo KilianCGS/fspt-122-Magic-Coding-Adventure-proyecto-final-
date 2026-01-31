@@ -24,7 +24,8 @@
   padding: 1rem 0.6rem;
   margin-top: 10rem;
   box-sizing: border-box;
-  background-color: #ffffff;
+  background: linear-gradient(to right, rgb(197, 178, 178), rgb(194, 104, 104));
+
   border: 4px solid #000000;
   border-radius: 36px;
   box-shadow:
@@ -163,3 +164,4 @@
 .team-title.glitch {
   font-size: clamp(1rem, 5vw, 2.5rem);
 }
+

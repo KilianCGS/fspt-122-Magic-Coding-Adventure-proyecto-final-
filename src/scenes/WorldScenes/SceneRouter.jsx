@@ -1,64 +1,18 @@
-import { useState } from "react";
-
-import StackScreen from "../StackScreen/StackScreen";
-import WorldScene from "../WorldScenes/WorldScene";
-
+import WorldScene from "./WorldScene";
 import AlchemyZone from "../AlchemyZone/AlchemyZone";
-import LibraryZone from "../LibraryZone/LibraryZone";
-import QuizGame from "../QuizGame/QuizGame";
-import Iframe from "../StudyZone/Iframe";
 
-import AppShell from "../../layout/AppShell/AppShell";
-
-export default function SceneRouter() {
-    const [scene, setScene] = useState("stack");
-
-
-    const goToWorld = () => setScene("world");
-    const goToZone = (zoneId) => setScene(zoneId);
-
-    switch (scene) {
-
-        case "stack":
-            return <StackScreen onStart={goToWorld} />;
-
+export default function SceneRouter({ currentScene, setScene }) {
+    switch (currentScene) {
+        case "zone_1":
+            return <AlchemyZone onBack={() => setScene("world")} />;
 
         case "world":
+        default:
             return (
                 <WorldScene
-                    onBack={() => setScene("stack")}
-                    onEnterZone={goToZone}
+                    onEnterZone={(zoneId) => setScene(zoneId)}
+                    onBack={() => { }}
                 />
             );
-
-
-        case "Alchemy_Lab":
-            return (
-                <AppShell onExit={goToWorld}>
-                    <AlchemyZone />
-                </AppShell>
-            );
-
-        case "Library":
-            return (
-                <AppShell onExit={goToWorld}>
-                    <LibraryZone />
-                </AppShell>
-            );
-
-        case "Garden_Courtyard":
-            return (
-                <AppShell onExit={goToWorld}>
-                    <QuizGame />
-                </AppShell>
-            );
-
-
-        case "Study_Room":
-            return <Iframe onExit={goToWorld} />;
-
-
-        default:
-            return <WorldScene onBack={() => setScene("stack")} onEnterZone={goToZone} />;
     }
 }

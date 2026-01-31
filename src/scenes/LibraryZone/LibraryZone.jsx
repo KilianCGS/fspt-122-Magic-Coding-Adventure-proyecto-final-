@@ -5,6 +5,7 @@ import { useInventory } from "../../context/InventoryContext";
 import { GRIMORIOS } from "../../data/grimorios";
 import "./LibraryZone.css";
 
+
 import LibraryBackground from "../../assets/images/LibraryBackground.png";
 import RuneMatchGame from "./RuneMatchGame";
 import HtmlScroll from "../../assets/images/HtmlScroll.png";
@@ -84,7 +85,7 @@ export default function LibraryZone({ onExit }) {
         if (phase === "end" || phase === "finished") {
             stopTimer();
         }
-    }, [phase]);
+    }, [phase, onExit, registerGameOverActions, startTimer, stopTimer]);
 
     const nextDialog = () => {
         const dialogs = phase === "intro" ? INTRO_DIALOGS : END_DIALOGS;

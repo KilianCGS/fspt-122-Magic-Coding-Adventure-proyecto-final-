@@ -2,21 +2,32 @@ import os
 import json
 import requests
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import (
+    create_access_token,
+    jwt_required,
+    get_jwt_identity
+)
 from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User
 
 api = Blueprint("api", __name__)
 
+# =========================
+# AUTH
+# =========================
+
 @api.route("/register", methods=["POST"])
 def register():
     data = request.json
 
-    if not data.get("username") or not data.get("password") or not data.get("email"):
+    if not data.get("username") or not data.get("email") or not data.get("password"):
         return jsonify(msg="Faltan campos"), 400
 
     if User.query.filter_by(username=data["username"]).first():
         return jsonify(msg="Usuario ya existe"), 400
+
+    if User.query.filter_by(email=data["email"]).first():
+        return jsonify(msg="Email ya registrado"), 400
 
     user = User(
         username=data["username"],
@@ -65,6 +76,10 @@ def me():
     return jsonify(user.serialize())
 
 
+# =========================
+# GAME LOGIC
+# =========================
+
 @api.route("/sign-scroll", methods=["POST"])
 @jwt_required()
 def sign_scroll():
@@ -83,6 +98,10 @@ def sign_scroll():
     return jsonify(msg="Pergamino firmado correctamente")
 
 
+# =========================
+# HF API (NO TOCAR 😄)
+# =========================
+
 @api.route("/html-runes-hf", methods=["GET"])
 def get_html_runes_hf():
     hf_token = os.getenv("HF_API_KEY")
@@ -94,28 +113,18 @@ def get_html_runes_hf():
 
     prompt = """
 Eres una API que genera datos educativos.
-
 Devuelve ÚNICAMENTE un JSON válido.
 NO escribas texto fuera del JSON.
-NO añadas explicaciones.
-
-El JSON debe seguir EXACTAMENTE este esquema:
 
 {
   "pairs": [
-    {
-      "id": 1,
-      "term": "<h1>",
-      "definition": "Título principal del documento HTML"
-    }
+    { "id": 1, "term": "<h1>", "definition": "Título principal del documento HTML" }
   ]
 }
 
 Reglas:
-- Genera EXACTAMENTE 10 pares
-- Los términos deben ser HTML básico
-- Las definiciones deben ser claras y cortas
-- Los IDs deben ir del 1 al 10
+- EXACTAMENTE 10 pares
+- IDs del 1 al 10
 """
 
     payload = {
@@ -135,42 +144,27 @@ Reglas:
         )
 
         raw = response.json()
-
-        if isinstance(raw, list):
-            text = raw[0].get("generated_text", "")
-        else:
-            text = raw.get("generated_text", "")
+        text = raw[0].get("generated_text", "") if isinstance(raw, list) else raw.get("generated_text", "")
 
         start = text.find("{")
         end = text.rfind("}") + 1
-        clean = text[start:end]
+        parsed = json.loads(text[start:end])
 
-        parsed = json.loads(clean)
-        pairs = parsed.get("pairs", [])
+        return jsonify(pairs=parsed["pairs"], source="huggingface")
 
-        if len(pairs) != 10:
-            raise ValueError("Número incorrecto de pares")
-
-        return jsonify({
-            "pairs": pairs,
-            "source": "huggingface"
-        })
-
-    except Exception as e:
-        print("HF ERROR:", e, flush=True)
-
-        return jsonify({
-            "pairs": [
-                   { "id": 1, "term": "<h1>", "definition": "Título principal del documento HTML" },
-                   { "id": 2, "term": "<p>", "definition": "Define un párrafo de texto" },
-                   { "id": 3, "term": "<img>", "definition": "Inserta una imagen en la página" },
-                   { "id": 4, "term": "<a>", "definition": "Crea un enlace a otra página" },
-                   { "id": 5, "term": "<body>", "definition": "Contiene el contenido visible del documento" },
-                   { "id": 6, "term": "atributo", "definition": "Modifica una etiqueta HTML" },
-                   { "id": 7, "term": "<br>", "definition": "Inserta un salto de línea" },
-                   { "id": 8, "term": "<strong>", "definition": "Resalta texto importante en negrita" },
-                   { "id": 9, "term": "elemento", "definition": "Unidad básica de una estructura HTML" },
-                   { "id": 10, "term": "<input>", "definition": "Campo para introducir datos del usuario" }
+    except Exception:
+        return jsonify(
+            pairs=[
+                { "id": 1, "term": "<h1>", "definition": "Título principal del documento HTML" },
+                { "id": 2, "term": "<p>", "definition": "Define un párrafo" },
+                { "id": 3, "term": "<img>", "definition": "Inserta una imagen" },
+                { "id": 4, "term": "<a>", "definition": "Crea un enlace" },
+                { "id": 5, "term": "<body>", "definition": "Contenido visible" },
+                { "id": 6, "term": "<br>", "definition": "Salto de línea" },
+                { "id": 7, "term": "<strong>", "definition": "Texto importante" },
+                { "id": 8, "term": "<input>", "definition": "Entrada de datos" },
+                { "id": 9, "term": "<div>", "definition": "Contenedor" },
+                { "id": 10, "term": "<span>", "definition": "Texto en línea" }
             ],
-            "source": "fallback"
-        })
+            source="fallback"
+        )

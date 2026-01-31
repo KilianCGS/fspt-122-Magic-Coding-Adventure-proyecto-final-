@@ -14,14 +14,14 @@ function TeamShowcase() {
   const mainBackgroundStyle = activeAvatar
     ? {
       backgroundImage: `url(${activeAvatar.background})`,
-      backgroundSize: "cover",
+      backgroundSize: "100 % 100 %",
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
       backgroundColor: "#000000",
     }
     : {
       backgroundImage: `url(${defaultBackground})`,
-      backgroundSize: "cover",
+      backgroundSize: "92% 100%",
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
       backgroundColor: "#000000",
