@@ -51,7 +51,9 @@
 
   cursor: pointer;
   user-select: none;
+
   z-index: 200;
+
 }
 
 .worldscene-back:hover {
@@ -62,6 +64,7 @@
   transform: translate(2px, 2px);
   box-shadow: 1px 1px 0 #000;
 }
+
 
 .worldscene-overlay {
   position: fixed;
@@ -213,3 +216,4 @@
     opacity: 1;
   }
 }
+

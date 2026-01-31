@@ -11,7 +11,9 @@ import "./WorldScene.css";
 import bgImageSrc from "./assets/bg_world.png";
 import studentMageSprite from "./assets/student_mage.png";
 import navMaskSrc from "./assets/nav_mask.png";
+
 import gitagorasImage from "../../assets/backgrounds/Gitagoras.jpeg";
+
 
 import zoneEnterSoundSrc from "./assets/sounds/zone-enter.mp3";
 import interactSoundSrc from "./assets/sounds/interact.mp3";
@@ -21,6 +23,8 @@ const BASE_HEIGHT = 982;
 const PARTICLE_COUNT = 60;
 const SPARK_COUNT = 24;
 
+
+
 const GITAGORAS_FALLBACK = [
   "¡Saludos, aprendiz! Soy Gitágoras. Ahora mismo estoy MUY ocupado.",
   "Estoy 'alineando los astros del código'... o sea, depurando errores otra vez.",
@@ -28,10 +32,12 @@ const GITAGORAS_FALLBACK = [
   "Vuelve luego, aprendiz. Mientras tanto, no toques nada que brille... salvo tu curiosidad."
 ];
 
+
 export default function WorldScene({ stackId, onBack, onEnterZone }) {
   const canvasRef = useRef(null);
   const [scale, setScale] = useState(1);
   const [fontReady, setFontReady] = useState(false);
+
   const [showGitagoras, setShowGitagoras] = useState(false);
   const [gitagorasDialogues, setGitagorasDialogues] = useState(GITAGORAS_FALLBACK);
   const [gitagorasIndex, setGitagorasIndex] = useState(0);
@@ -87,6 +93,7 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
       setGitagorasDialogues(getRandomDialogues(GITAGORAS_FALLBACK));
     }
   };
+
 
   useEffect(() => {
     const updateScale = () => {
@@ -304,6 +311,9 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
       if (inputState.interact && !wasInteractPressed && activeZone) {
         interactSound.currentTime = 0;
         interactSound.play();
+
+        onEnterZone?.(activeZone.id);
+
         if (activeZone.id === "zone_3") {
           setGitagorasIndex(0);
           setGitagorasDialogues(["Un momento..."]);
@@ -312,6 +322,7 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
         } else {
           onEnterZone?.(activeZone.id);
         }
+
       }
 
       wasInteractPressed = inputState.interact;
@@ -334,6 +345,7 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
     }
 
   }, [fontReady, onEnterZone]);
+
 
   useEffect(() => {
     if (!showGitagoras) return;
@@ -360,6 +372,7 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
     }
   };
 
+
   return (
     <div className="worldscene-root">
       <div className="worldscene-scale" style={{ transform: `scale(${scale})` }}>
@@ -373,6 +386,7 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
           <button onClick={onBack} className="worldscene-back">
             BACK
           </button>
+
           {showGitagoras && (
             <div className="worldscene-overlay">
               <button
@@ -394,6 +408,7 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
               </div>
             </div>
           )}
+
         </div>
       </div>
     </div>
