@@ -6,11 +6,12 @@
   background-repeat: no-repeat;
   font-family: "Press Start 2P", monospace;
   z-index: 100;
+  position: relative;
 }
 
 .overlay {
   position: relative;
-  z-index: 5;
+  z-index: 1;
   width: 100%;
   height: 100%;
   background: rgba(10, 10, 20, 0.25);
@@ -36,10 +37,9 @@
   gap: 40px;
   margin-bottom: 60px;
   font-family: "Press Start 2P", monospace;
-  
 }
 
-button{
+button {
   margin-top: 10px;
 }
 .main-buttons button {
@@ -128,6 +128,16 @@ button{
 }
 
 /* todo provisinal */
+.user-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .avatar-display {
   margin-bottom: "30px";
@@ -194,16 +204,10 @@ button{
 }
 
 .user-panel {
-  position: absolute;
-  top: 60px;
-  left: 0;
-  background: rgba(0, 0, 0, 0.9);
-  border: 2px solid #ffd700;
+  background: #1f1f2e;
+  padding: 20px;
   border-radius: 12px;
-  padding: 16px;
-  width: 220px;
-  z-index: 20;
-  text-align: center;
+  min-width: 260px;
 }
 
 .user-panel h2 {
@@ -233,4 +237,7 @@ button{
   border: none;
   color: #fff;
   cursor: pointer;
+}
+.overlay::before {
+  pointer-events: none;
 }
