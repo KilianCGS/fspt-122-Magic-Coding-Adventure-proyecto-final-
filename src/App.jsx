@@ -6,6 +6,7 @@ import TeamShowcase from "./components/AboutUs/TeamShowcase/TeamShowcase";
 import CustomCursor from "./CustomCursor";
 import { IdleProvider } from "./context/IdleContext";
 import AppLayout from "./layout/AppLayout";
+import { GameOverProvider } from "./context/GameOverContext";
 
 
 
@@ -20,30 +21,30 @@ function App() {
     const [username, setUsername] = useState(null);
 
     return (
+        <GameOverProvider>
+            <IdleProvider>
+                <CustomCursor />
+                <AppLayout>
 
-        <IdleProvider>
-            <CustomCursor />
-            <AppLayout>
+                    {!inGame && !showAbout && (
+                        <LoginScreen
+                            loggedIn={loggedIn}
+                            onStartGame={() => setInGame(true)}
+                            onLogout={() => setLoggedIn(false)}
+                            onAbout={() => setShowAbout(true)}
+                            onLogin={() => setLoggedIn(true)}
 
-                {!inGame && !showAbout && (
-                    <LoginScreen
-                        loggedIn={loggedIn}
-                        onStartGame={() => setInGame(true)}
-                        onLogout={() => setLoggedIn(false)}
-                        onAbout={() => setShowAbout(true)}
-                        onLogin={() => setLoggedIn(true)}
+                        />
+                    )}
 
-                    />
-                )}
+                    {showAbout && !inGame && (
+                        <TeamShowcase onBack={() => setShowAbout(false)} />
+                    )}
 
-                {showAbout && !inGame && (
-                    <TeamShowcase onBack={() => setShowAbout(false)} />
-                )}
-
-                {inGame && <BeginningChapter />}
-            </AppLayout>
-        </IdleProvider>
-
+                    {inGame && <BeginningChapter />}
+                </AppLayout>
+            </IdleProvider>
+        </GameOverProvider>
 
     );
 }
