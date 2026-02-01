@@ -15,15 +15,9 @@ const QuizTimer = ({ onTimeUp, isActive, onReset }) => {
     useEffect(() => {
         if (!isActive) return;
 
-        if (timeLeft <= 0) {
-            onTimeUp();
-            return;
-        }
-
         const timer = setInterval(() => {
             setTimeLeft(prev => {
                 if (prev <= 1) {
-                    clearInterval(timer);
                     onTimeUp();
                     return 0;
                 }
@@ -32,7 +26,7 @@ const QuizTimer = ({ onTimeUp, isActive, onReset }) => {
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [timeLeft, isActive, onTimeUp]);
+    }, [isActive, onTimeUp]);
 
     const timerClass =
         timeLeft <= 5 ? 'danger' :

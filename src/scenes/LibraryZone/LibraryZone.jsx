@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useTime } from "../../context/TimeContext";
 import { useGameOver } from "../../context/GameOverContext";
 import { useInventory } from "../../context/InventoryContext";
@@ -61,23 +61,36 @@ export default function LibraryZone({ onExit }) {
     };
 
     const scrollImage = getScrollImage();
+    const typingIntervalRef = useRef(null);
 
     useEffect(() => {
-        let interval;
         const dialogs = phase === "intro" ? INTRO_DIALOGS : END_DIALOGS;
         const text = dialogs[dialogIndex];
 
         if (text) {
-            setTypedDialog("");
             let i = 0;
-            interval = setInterval(() => {
+            setTypedDialog("");
+
+            if (typingIntervalRef.current) {
+                clearInterval(typingIntervalRef.current);
+            }
+
+            typingIntervalRef.current = setInterval(() => {
                 i++;
                 setTypedDialog(text.slice(0, i));
-                if (i >= text.length) clearInterval(interval);
+                if (i >= text.length) {
+                    clearInterval(typingIntervalRef.current);
+                    typingIntervalRef.current = null;
+                }
             }, 25);
         }
 
-        return () => clearInterval(interval);
+        return () => {
+            if (typingIntervalRef.current) {
+                clearInterval(typingIntervalRef.current);
+                typingIntervalRef.current = null;
+            }
+        };
     }, [phase, dialogIndex]);
 
     useEffect(() => {
@@ -95,7 +108,7 @@ export default function LibraryZone({ onExit }) {
         if (phase === "end" || phase === "finished") {
             stopTimer();
         }
-    }, [phase, onExit, registerGameOverActions, startTimer, stopTimer]);
+    }, [phase]); // Solo depender de phase
 
     const nextDialog = () => {
         const dialogs = phase === "intro" ? INTRO_DIALOGS : END_DIALOGS;
