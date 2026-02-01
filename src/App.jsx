@@ -104,7 +104,7 @@ export default App; */
 
 
 
-/* import AppShell from "./layout/AppShell/AppShell";
+import AppShell from "./layout/AppShell/AppShell";
 import AlchemyZone from "./scenes/AlchemyZone/AlchemyZone";
 
 import { InventoryProvider } from "./context/InventoryContext";
@@ -128,13 +128,5 @@ function App() {
     );
 }
 
-export default App;  */
-
-import BeginningChapter from "./scenes/BeginningChapter/BeginningChapter";
-
-function App() {
-    return <BeginningChapter />;
-
-}
-
 export default App;
+
