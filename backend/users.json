@@ -70,5 +70,18 @@
       "gorro": "/src/assets/images/Avatar/Gorros/Gorro-1.png",
       "fondo": "/src/assets/images/Avatar/Fondos/fondo-4.png"
     }
+  },
+  "sorin": {
+    "password": "pbkdf2:sha256:1000000$xuS4VPrwaMIZu3Os$ed4f7ee18c704664c1e6e70d50f7e0602a62372e48c1106f42b8bb5e527c617c",
+    "email": "sorin@sorin.com",
+    "avatar": {
+      "muneco": "/src/assets/images/Avatar/Avatar/Muneco.png",
+      "ojos": "/src/assets/images/Avatar/Ojos/Ojos-3.png",
+      "pelo": "/src/assets/images/Avatar/Pelo/Pelo-4.png",
+      "ropa": "/src/assets/images/Avatar/Ropa/Ropa-5.png",
+      "accesorio": "/src/assets/images/Avatar/Accesorios/Accesorio-7.png",
+      "gorro": "/src/assets/images/Avatar/Gorros/Gorro-1.png",
+      "fondo": "/src/assets/images/Avatar/Fondos/fondo-4.png"
+    }
   }
 }

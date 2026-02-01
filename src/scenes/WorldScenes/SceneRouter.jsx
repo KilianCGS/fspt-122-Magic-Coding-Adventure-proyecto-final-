@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import BeginningChapter from "../BeginningChapter/BeginningChapter";
 import StackScreen from "../StackScreen/StackScreen";
 import WorldScene from "../WorldScenes/WorldScene";
 
@@ -11,13 +12,17 @@ import Iframe from "../StudyZone/Iframe";
 import AppShell from "../../layout/AppShell/AppShell";
 
 export default function SceneRouter() {
-    const [scene, setScene] = useState("stack");
+    const [scene, setScene] = useState("beginning");
 
 
+    const goToStack = () => setScene("stack");
     const goToWorld = () => setScene("world");
     const goToZone = (zoneId) => setScene(zoneId);
 
     switch (scene) {
+
+        case "beginning":
+            return <BeginningChapter onFinish={goToStack} />;
 
         case "stack":
             return <StackScreen onStart={goToWorld} />;

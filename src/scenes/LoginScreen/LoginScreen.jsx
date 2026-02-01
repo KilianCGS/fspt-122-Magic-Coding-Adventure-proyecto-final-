@@ -11,7 +11,7 @@ import { useIdle } from "../../context/IdleContext";
 import idleSound from "../../assets/sounds/mensaje-carol.mp3"
 import { TimeProvider } from "../../context/TimeContext.jsx"
 
-const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
+const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout }) => {
 
     const [mode, setMode] = useState(null);
     const [showUserPanel, setShowUserPanel] = useState(false);
@@ -72,7 +72,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
                     ...data.avatar
                 });
                 setUser(data);
-                onLogin?.(me.username);
+                onLogin?.();
 
             } catch (err) {
                 console.error("error cargando usuario", err);
@@ -106,7 +106,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
         }
 
         try {
-            const res = await fetch("http://127.0.0.1:3001/api/register", {
+            const res = await fetch("http://127.0.0.1:5000/api/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -133,7 +133,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
         e.preventDefault();
 
         try {
-            const res = await fetch("http://127.0.0.1:3001/api/login", {
+            const res = await fetch("http://127.0.0.1:5000/api/login", {
                 method: "POST",
                 headers: { "Content-type": "application/json" },
                 body: JSON.stringify({
@@ -155,11 +155,8 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
             const me = await meRes.json();
             setAvatar(me.avatar)
             setUser(me);
-            onLogin?.(me.username);
+            onLogin?.();
             setMode(null);
-
-            setMode(null);
-            onLogin();
         } catch (err) {
             alert(err.message);
         }
@@ -175,7 +172,6 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
                         <div className="main-buttons">
                             <button onClick={() => setMode("register")}>Crear usuario</button>
                             <button onClick={() => setMode("login")}>Iniciar sesión</button>
-                            <button onClick={onQuizz} style={{ background: "#9333ea" }}>Jugar Quiz (Demo)</button>
                         </div>
 
                         {mode === "register" && (
@@ -297,10 +293,6 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
                         </div>
                     </div>
                 )}
-
-                <div className="footer-buttons-container">
-                    <button onClick={onAbout}>About us</button>
-                </div>
 
                 <TimeProvider>
                     <ChatBot insideShell={false} />

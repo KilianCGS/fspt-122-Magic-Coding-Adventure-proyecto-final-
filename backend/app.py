@@ -71,6 +71,9 @@ def login():
     user = users.get(username)
     if not user or not check_password_hash(user["password"], password):
         return jsonify({"msg": "Usuario o contraseña incorrectos"}), 401
+    
+    access_token = create_access_token(identity=username)
+    return jsonify(access_token=access_token), 200
 
 
 
@@ -83,6 +86,15 @@ def get_me():
     users= load_users()
     username = get_jwt_identity()
     user = users.get(username)
+    
+    if not user:
+        return jsonify({"msg": "usuario no encontrado"}), 404
+    
+    return jsonify({
+        "username": username,
+        "email": user.get("email"),
+        "avatar": user.get("avatar")
+    }), 200
 
 
 
