@@ -1,79 +1,38 @@
-//--------------------------------------------------------------- Zona Alquimia
+import { useState } from "react";
 
-/* 
-import { useState, useEffect } from "react";
-import AlchemyZone from "./scenes/AlchemyZone/AlchemyZone";
-import AppShell from "./layout/AppShell/AppShell";
-import LoaderOverlay from "./components/Loader/LoaderOverlay";
-import { TimeProvider } from "./context/TimeContext";
-import { GameOverProvider } from "./context/GameOverContext";
-import GameOverModal from "./components/GameOverModal/GameOverModal";
-
-function App() {
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 2000);
-
-        return () => clearTimeout(timer);
-    }, []);
-
-    return (
-        <GameOverProvider>
-            <TimeProvider>
-                <LoaderOverlay visible={loading} />
-
-                <AppShell>
-                    {!loading && <AlchemyZone />}
-                </AppShell>
-
-                <GameOverModal />
-            </TimeProvider>
-        </GameOverProvider>
-    );
-}
-
-export default App; */
-
-//---------------------------------------------------------------------- Mapa
-/*
-import WorldScene from "./scenes/WorldScenes/WorldScene"
-
-function App() {
-
-   return <WorldScene />;
-}
-
-export default App;
-*/
-
-
-//----------------------------------------------------------------------- Biblioteca
-
-import AppShell from "./layout/AppShell/AppShell";
+import SceneRouter from "./scenes/WorldScenes/SceneRouter";
+import LoaderOverlay from "./components/loader/LoaderOverlay";
 
 import { TimeProvider } from "./context/TimeContext";
 import { GameOverProvider } from "./context/GameOverContext";
 import { InventoryProvider } from "./context/InventoryContext";
 
-import LibraryZone from "./scenes/LibraryZone/LibraryZone";
+function App() {
+    const [scene, setScene] = useState("stack");
+    const [loading, setLoading] = useState(false);
 
-export default function App() {
+    const changeScene = (next) => {
+        setLoading(true);
+        setTimeout(() => {
+            setScene(next);
+            setLoading(false);
+        }, 600);
+    };
+
     return (
-        <AppShell>
+        <GameOverProvider>
             <TimeProvider>
-                <GameOverProvider>
-                    <InventoryProvider>
-                        <LibraryZone
-                            onExit={() => {
-                                console.log("Salir de la Biblioteca Arcana");
-                            }}
-                        />
-                    </InventoryProvider>
-                </GameOverProvider>
+                <InventoryProvider>
+                    <SceneRouter
+                        currentScene={scene}
+                        setScene={changeScene}
+                    />
+
+                    <LoaderOverlay visible={loading} />
+                </InventoryProvider>
             </TimeProvider>
-        </AppShell>
+        </GameOverProvider>
     );
 }
+
+export default App;
