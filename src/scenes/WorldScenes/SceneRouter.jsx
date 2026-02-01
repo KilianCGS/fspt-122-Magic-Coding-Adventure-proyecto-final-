@@ -6,6 +6,7 @@ import WorldScene from "../WorldScenes/WorldScene";
 
 import AlchemyZone from "../AlchemyZone/AlchemyZone";
 import LibraryZone from "../LibraryZone/LibraryZone";
+import OficinaGitagoras from "../OficinaGitagoras/OficinaGitagoras";
 import QuizGame from "../GardenZone/QuizGame";
 import Iframe from "../StudyZone/Iframe";
 
@@ -52,6 +53,10 @@ export default function SceneRouter() {
                     <LibraryZone />
                 </AppShell>
             );
+
+        case "zone_3":
+        case "Oficina_Gitagoras":
+            return <OficinaGitagoras onExit={goToWorld} />;
 
         case "zone_4":
         case "Garden_Courtyard":
