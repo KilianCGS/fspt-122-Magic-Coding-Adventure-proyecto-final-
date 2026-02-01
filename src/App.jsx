@@ -1,38 +1,54 @@
 import { useState } from "react";
-
-import SceneRouter from "./scenes/WorldScenes/SceneRouter";
-import LoaderOverlay from "./components/loader/LoaderOverlay";
-
+import "./App.css";
+import LoginScreen from "./scenes/LoginScreen/LoginScreen";
+import BeginningChapter from "./scenes/BeginningChapter/BeginningChapter";
+import LibraryZone from "./scenes/LibraryZone/LibraryZone";
+import TeamShowcase from "./components/AboutUs/TeamShowcase";
+import QuizzGame from "./scenes/QuzzGame/QuizzGame";
+import CustomCursor from "./CustomCursor";
 import { TimeProvider } from "./context/TimeContext";
-import { GameOverProvider } from "./context/GameOverContext";
-import { InventoryProvider } from "./context/InventoryContext";
 
 function App() {
-    const [scene, setScene] = useState("stack");
-    const [loading, setLoading] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [inGame, setInGame] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
+  const [showQuizz, setShowQuizz] = useState(false);
+  const [completedBeginning, setCompletedBeginning] = useState(false);
 
-    const changeScene = (next) => {
-        setLoading(true);
-        setTimeout(() => {
-            setScene(next);
-            setLoading(false);
-        }, 600);
-    };
+  return (
+    <TimeProvider>
+      <>
+        <CustomCursor />
 
-    return (
-        <GameOverProvider>
-            <TimeProvider>
-                <InventoryProvider>
-                    <SceneRouter
-                        currentScene={scene}
-                        setScene={changeScene}
-                    />
+      {!inGame && !showAbout && !showQuizz && !completedBeginning && (
+        <LoginScreen
+          onLogin={() => setLoggedIn(true)}
+          loggedIn={loggedIn}
+          onStartGame={() => setInGame(true)}
+          onLogout={() => setLoggedIn(false)}
+          onAbout={() => setShowAbout(true)}
+          onQuizz={() => setShowQuizz(true)}
+        />
+      )}
 
-                    <LoaderOverlay visible={loading} />
-                </InventoryProvider>
-            </TimeProvider>
-        </GameOverProvider>
-    );
+      {showAbout && !inGame && !showQuizz && (
+        <TeamShowcase onBack={() => setShowAbout(false)} />
+      )}
+
+      {showQuizz && !inGame && !showAbout && (
+        <QuizzGame onExit={() => setShowQuizz(false)} />
+      )}
+
+      {inGame && !showQuizz && !showAbout && !completedBeginning && (
+        <BeginningChapter onComplete={() => setCompletedBeginning(true)} />
+      )}
+
+      {inGame && !showQuizz && !showAbout && completedBeginning && (
+        <LibraryZone />
+      )}
+      </>
+    </TimeProvider>
+  );
 }
 
 export default App;
