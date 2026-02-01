@@ -112,21 +112,13 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
             });
 
             const data = await res.json();
-            if (!res.ok) throw new Error(data.msg || "Error al registrar");
+            if (!res.ok) throw new Error(data.msg);
 
             localStorage.setItem("token", data.access_token);
+            localStorage.removeItem("scrollSigned");
 
-
-            const meRes = await fetch("http://127.0.0.1:5000/api/me", {
-                headers: {
-                    Authorization: `Bearer ${data.access_token}`,
-                }
-            });
-            const me = await meRes.json();
-            setUser(me);
-            setAvatar(me.avatar);
-            onLogin?.(me.username);
             setMode(null);
+            onLogin();
         } catch (err) {
             alert(err.message);
         }
@@ -149,19 +141,9 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
             if (!res.ok) throw new Error(data.msg);
 
             localStorage.setItem("token", data.access_token);
-            // onLogin(formData.username);
 
-            const meRes = await fetch("http://127.0.0.1:5000/api/me", {
-                headers: {
-                    Authorization: `Bearer ${data.access_token}`,
-                },
-            })
-            const me = await meRes.json();
-            setAvatar(me.avatar)
-            setUser(me);
-            onLogin?.(me.username);
             setMode(null);
-
+            onLogin();
         } catch (err) {
             alert(err.message);
         }

@@ -1,235 +1,66 @@
-<<<<<<< HEAD
-=======
 /* 
 
 import { useState } from "react";
-import LoginScreen from "./scenes/LoginScreen/LoginScreen";
-import BeginningChapter from "./scenes/BeginningChapter/BeginningChapter";
-import TeamShowcase from "./components/AboutUs/TeamShowcase/TeamShowcase";
-import CustomCursor from "./CustomCursor";
-import { IdleProvider } from "./context/IdleContext";
 
-
-
-
-
-
-function App() {
-    const [loggedIn, setLoggedIn] = useState(false);
-    const [inGame, setInGame] = useState(false);
-    const [showAbout, setShowAbout] = useState(false);
-    const [username, setUsername] = useState(null);
-
-    return (
-
-        <IdleProvider>
-            <CustomCursor />
-
-            {!inGame && !showAbout && (
-                <LoginScreen
-                    loggedIn={loggedIn}
-                    onStartGame={() => setInGame(true)}
-                    onLogout={() => setLoggedIn(false)}
-                    onAbout={() => setShowAbout(true)}
-                    onLogin={() => setLoggedIn(true)}
-
-                />
-            )}
-
-            {showAbout && !inGame && (
-                <TeamShowcase onBack={() => setShowAbout(false)} />
-            )}
-
-            {inGame && <BeginningChapter />}
-        </IdleProvider>
-
-    );
-}
-
-export default App; */
-
-// ----------------------------------------------------------------------------
-export default App;
-
-
-/*
-import { useState, useEffect } from "react";
-import LibraryZone from "./scenes/LibraryZone/LibraryZone";
-import AppShell from "./layout/AppShell/AppShell";
-import LoaderOverlay from "./components/Loader/LoaderOverlay";
-import { TimeProvider } from "./context/TimeContext";
-import { GameOverProvider } from "./context/GameOverContext";
-import GameOverModal from "./components//GameOverModal/GameOverModal";
-
-// import { useState, useEffect } from "react";
-// import LibraryZone from "./scenes/LibraryZone/LibraryZone";
-// import AppShell from "./layout/AppShell/AppShell";
-// import LoaderOverlay from "./components/Loader/LoaderOverlay";
-// import { TimeProvider } from "./context/TimeContext";
-
-// function App() {
-//   const [loading, setLoading] = useState(true);
-
-    return (
-        <GameOverProvider>
-            <TimeProvider>
-                <LoaderOverlay visible={loading} />
-                <AppShell>
-                    {!loading && <LibraryZone />}
-                </AppShell>
-                <GameOverModal />
-            </TimeProvider>
-        </GameOverProvider>
-    );
-}
-
-export default App;
-//   useEffect(() => {
-//     const timer = setTimeout(() => {
-//       setLoading(false);
-//     }, 2000);
-//     return () => clearTimeout(timer);
-//   }, []);
-
-//   return (
-//     <TimeProvider>
-
-//       <LoaderOverlay visible={loading} />
-
-
-
-//---------------------------------
-
-
-/* import StackScreen from "./scenes/StackScreen/StackScreen";
-
-function App() {
-    return <StackScreen />;
-}
-
-export default App;  */
-//-----------------------------------
-
-/*import { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, useNavigate, Navigate } from "react-router-dom";
-
-import LoginScreen from "./scenes/LoginScreen/LoginScreen";
-import BeginningChapter from "./scenes/BeginningChapter/BeginningChapter";
 import StackScreen from "./scenes/StackScreen/StackScreen";
-import LoaderOverlay from "./components/Loader/LoaderOverlay";
+import WorldScene from "./scenes/WorldScenes/WorldScene";
+import MinigameMock from "./scenes/MinigameMock/MinigameMock";
+import QuizGame from "./scenes/QuizGame/QuizGame";
+import LoaderOverlay from "./components/loader/LoaderOverlay";
 
-import LockedMagicModal from "./components/LockedMagicModal/LockedMagicModal";
-import BlockedStackRoute from "./components/BlockedStackRoute";
-
-function AppRoutes() {
-    const navigate = useNavigate();
-
-    const [loggedIn, setLoggedIn] = useState(false);
-    const [scrollSigned, setScrollSigned] = useState(false);
+function App() {
+    const [screen, setScreen] = useState("stack");
     const [loading, setLoading] = useState(false);
-    const [lockedModal, setLockedModal] = useState(false);
+    const [activeZone, setActiveZone] = useState(null);
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        const signed = localStorage.getItem("scrollSigned") === "true";
-
-        if (token) {
-            setLoggedIn(true);
-            setScrollSigned(signed);
-        }
-    }, []);
-
-    const showLoaderAndNavigate = (path) => {
+    const goToWorld = () => {
         setLoading(true);
         setTimeout(() => {
+            setScreen("world");
             setLoading(false);
-            navigate(path);
-        }, 1800);
+        }, 800);
     };
 
-    const handleLogin = () => setLoggedIn(true);
-
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("scrollSigned");
-        setLoggedIn(false);
-        setScrollSigned(false);
-        navigate("/login");
-    };
-
-    const handleEnterWorld = () => {
-        showLoaderAndNavigate(scrollSigned ? "/stacks" : "/beginning");
-    };
-    const handleFinishBeginning = async () => {
+    const goToMinigame = (zoneId) => {
+        setActiveZone(zoneId);
         setLoading(true);
-
-        try {
-            await fetch("http://localhost:5000/api/sign-scroll", {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${localStorage.getItem("token")}`,
-                    "Content-Type": "application/json"
-                }
-            });
-
-            setScrollSigned(true);
-            showLoaderAndNavigate("/stacks");
-
-        } catch (err) {
-            console.error("Error al firmar el pergamino", err);
+        setTimeout(() => {
+            setScreen("minigame");
             setLoading(false);
-        }
+        }, 800);
+    };
+
+    const backToWorld = () => {
+        setLoading(true);
+        setTimeout(() => {
+            setScreen("world");
+            setLoading(false);
+        }, 800);
     };
 
     return (
         <>
-            <Routes>
-                <Route
-                    path="/login"
-                    element={
-                        <LoginScreen
-                            loggedIn={loggedIn}
-                            onLogin={handleLogin}
-                            onStartGame={handleEnterWorld}
-                            onLogout={handleLogout}
-                        />
-                    }
+            {screen === "stack" && (
+                <StackScreen onStart={goToWorld} />
+            )}
+
+            {screen === "world" && (
+                <WorldScene
+                    onBack={() => setScreen("stack")}
+                    onEnterZone={goToMinigame}
                 />
+            )}
 
-                <Route
-                    path="/beginning"
-                    element={
-                        scrollSigned
-                            ? <Navigate to="/stacks" replace />
-                            : <BeginningChapter onFinish={handleFinishBeginning} />
-                    }
+            {screen === "minigame" && activeZone === "zone_4" && (
+                <QuizGame onExit={backToWorld} />
+            )}
+
+            {screen === "minigame" && activeZone !== "zone_4" && (
+                <MinigameMock
+                    zoneId={activeZone}
+                    onExit={backToWorld}
                 />
-
-                <Route
-                    path="/stacks"
-                    element={
-                        <StackScreen
-                            onBackToMenu={() => showLoaderAndNavigate("/login")}
-                        />
-                    }
-                />
-
-                <Route
-                    path="/stacks/:forbidden"
-                    element={
-                        <BlockedStackRoute
-                            onBlocked={() => setLockedModal(true)}
-                        />
-                    }
-                />
-
-                <Route path="*" element={<Navigate to="/login" replace />} />
-            </Routes>
-
-            <LockedMagicModal
-                visible={lockedModal}
-                onClose={() => setLockedModal(false)}
-            />
+            )}
 
             <LoaderOverlay visible={loading} />
         </>
@@ -244,7 +75,7 @@ export default function App() {
     );
 } 
  */
-export default App;*/
+
 //       <AppShell>
 
 //         {!loading && <LibraryZone />}
@@ -254,4 +85,4 @@ export default App;*/
 // }
 
 // export default App;
->>>>>>> origin/Most-updated-branch-(28/01/26)
+
