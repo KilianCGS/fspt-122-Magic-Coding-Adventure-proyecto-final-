@@ -42,7 +42,7 @@ const END_DIALOGS = [
 ];
 
 
-export default function LibraryZone() {
+export default function LibraryZone({ onExit }) {
     const { startTimer, stopTimer } = useTime();
     const { registerGameOverActions } = useGameOver();
     const { addGrimorio } = useInventory();

@@ -37,9 +37,7 @@ export default function WorldScene({ onBack, onEnterZone }) {
   const [gitagorasTyped, setGitagorasTyped] = useState("");
   const [gitagorasTyping, setGitagorasTyping] = useState(false);
 
-  // ===============================
-  // SCALE
-  // ===============================
+
   useEffect(() => {
     const updateScale = () =>
       setScale(
@@ -55,18 +53,14 @@ export default function WorldScene({ onBack, onEnterZone }) {
     return () => window.removeEventListener("resize", updateScale);
   }, []);
 
-  // ===============================
-  // FONT (SAFE)
-  // ===============================
+
   useEffect(() => {
     document.fonts
       .load("16px 'Press Start 2P'")
       .finally(() => setFontReady(true));
   }, []);
 
-  // ===============================
-  // MAIN GAME LOOP
-  // ===============================
+
   useEffect(() => {
     if (!fontReady) return;
 
