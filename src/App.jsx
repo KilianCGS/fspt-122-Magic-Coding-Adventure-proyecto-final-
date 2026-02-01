@@ -1,67 +1,37 @@
 import { useState } from "react";
 
-import StackScreen from "./scenes/StackScreen/StackScreen";
-import WorldScene from "./scenes/WorldScenes/WorldScene";
-import MinigameMock from "./scenes/MinigameMock/MinigameMock";
-import QuizGame from "./scenes/QuizGame/QuizGame";
+import SceneRouter from "./scenes/WorldScenes/SceneRouter";
 import LoaderOverlay from "./components/loader/LoaderOverlay";
 
+import { TimeProvider } from "./context/TimeContext";
+import { GameOverProvider } from "./context/GameOverContext";
+import { InventoryProvider } from "./context/InventoryContext";
+
 function App() {
-    const [screen, setScreen] = useState("stack");
+    const [scene, setScene] = useState("stack");
     const [loading, setLoading] = useState(false);
-    const [activeZone, setActiveZone] = useState(null);
 
-    const goToWorld = () => {
+    const changeScene = (next) => {
         setLoading(true);
         setTimeout(() => {
-            setScreen("world");
+            setScene(next);
             setLoading(false);
-        }, 800);
-    };
-
-    const goToMinigame = (zoneId) => {
-        setActiveZone(zoneId);
-        setLoading(true);
-        setTimeout(() => {
-            setScreen("minigame");
-            setLoading(false);
-        }, 800);
-    };
-
-    const backToWorld = () => {
-        setLoading(true);
-        setTimeout(() => {
-            setScreen("world");
-            setLoading(false);
-        }, 800);
+        }, 600);
     };
 
     return (
-        <>
-            {screen === "stack" && (
-                <StackScreen onStart={goToWorld} />
-            )}
+        <GameOverProvider>
+            <TimeProvider>
+                <InventoryProvider>
+                    <SceneRouter
+                        currentScene={scene}
+                        setScene={changeScene}
+                    />
 
-            {screen === "world" && (
-                <WorldScene
-                    onBack={() => setScreen("stack")}
-                    onEnterZone={goToMinigame}
-                />
-            )}
-
-            {screen === "minigame" && activeZone === "zone_4" && (
-                <QuizGame onExit={backToWorld} />
-            )}
-
-            {screen === "minigame" && activeZone !== "zone_4" && (
-                <MinigameMock
-                    zoneId={activeZone}
-                    onExit={backToWorld}
-                />
-            )}
-
-            <LoaderOverlay visible={loading} />
-        </>
+                    <LoaderOverlay visible={loading} />
+                </InventoryProvider>
+            </TimeProvider>
+        </GameOverProvider>
     );
 }
 
