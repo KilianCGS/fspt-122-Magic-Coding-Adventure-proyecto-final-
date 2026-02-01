@@ -1,6 +1,17 @@
 import { useEffect, useState } from "react";
 import "./RuneMatchGame.css";
 
+const FALLBACK_PAIRS = [
+  { id: 1, term: "<html>", definition: "Define el documento HTML completo" },
+  { id: 2, term: "<head>", definition: "Contiene metadatos del documento" },
+  { id: 3, term: "<body>", definition: "Define el cuerpo visible del documento" },
+  { id: 4, term: "<h1>", definition: "Define un encabezado de nivel 1" },
+  { id: 5, term: "<p>", definition: "Define un párrafo de texto" },
+  { id: 6, term: "<a>", definition: "Define un hipervínculo" },
+  { id: 7, term: "<img>", definition: "Inserta una imagen" },
+  { id: 8, term: "<div>", definition: "Define un contenedor genérico" }
+];
+
 export default function RuneMatchGame({ onComplete }) {
   const [pairs, setPairs] = useState([]);
   const [shuffledDefs, setShuffledDefs] = useState([]);
@@ -11,15 +22,21 @@ export default function RuneMatchGame({ onComplete }) {
   useEffect(() => {
     console.log("RuneMatchGame mounted");
     fetch("http://localhost:5000/api/html-runes-hf")
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('Backend not available');
+        return res.json();
+      })
       .then(data => {
-        const pairs = data.pairs || []
+        const pairs = data.pairs || [];
         setPairs(pairs);
         setShuffledDefs([...pairs].sort(() => Math.random() - 0.5));
         setLoading(false);
       })
       .catch(err => {
-        console.error(err);
+        console.warn("Backend no disponible, usando datos de respaldo:", err);
+        // Usar datos de respaldo si el backend no está disponible
+        setPairs(FALLBACK_PAIRS);
+        setShuffledDefs([...FALLBACK_PAIRS].sort(() => Math.random() - 0.5));
         setLoading(false);
       });
   }, []);

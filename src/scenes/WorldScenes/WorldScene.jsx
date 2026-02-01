@@ -32,61 +32,12 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
   const canvasRef = useRef(null);
   const [scale, setScale] = useState(1);
   const [fontReady, setFontReady] = useState(false);
+
   const [showGitagoras, setShowGitagoras] = useState(false);
   const [gitagorasDialogues, setGitagorasDialogues] = useState(GITAGORAS_FALLBACK);
   const [gitagorasIndex, setGitagorasIndex] = useState(0);
   const [gitagorasTyped, setGitagorasTyped] = useState("");
   const [gitagorasTyping, setGitagorasTyping] = useState(false);
-
-  const getRandomDialogues = (source, count = 4) =>
-    [...source]
-      .sort(() => Math.random() - 0.5)
-      .slice(0, count);
-
-  const generateGitagorasDialogues = async () => {
-    try {
-      const apiKey = import.meta.env.VITE_MISTRAL_API_KEY;
-      if (!apiKey) throw new Error("Missing API key");
-
-      const response = await fetch("https://api.mistral.ai/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: "mistral-tiny-latest",
-          messages: [
-            {
-              role: "system",
-              content:
-                "Eres Gitágoras, un mago ocupado. Genera 4 frases cortas y graciosas en español para decirle al aprendiz que estás ocupado. Devuelve solo las frases, una por línea."
-            },
-            {
-              role: "user",
-              content: "Necesito 4 frases graciosas para el aprendiz."
-            }
-          ],
-          max_tokens: 120,
-          temperature: 0.9
-        })
-      });
-
-      if (!response.ok) throw new Error(`API error: ${response.status}`);
-      const data = await response.json();
-      const content = data?.choices?.[0]?.message?.content || "";
-
-      const lines = content
-        .split(/\n+/)
-        .map(line => line.replace(/^[\-\d\.\)\s•]+/, "").trim())
-        .filter(Boolean);
-
-      const nextDialogues = lines.length ? lines.slice(0, 4) : getRandomDialogues(GITAGORAS_FALLBACK);
-      setGitagorasDialogues(nextDialogues);
-    } catch (error) {
-      setGitagorasDialogues(getRandomDialogues(GITAGORAS_FALLBACK));
-    }
-  };
 
   useEffect(() => {
     const updateScale = () => {
@@ -306,9 +257,8 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
         interactSound.play();
         if (activeZone.id === "zone_3") {
           setGitagorasIndex(0);
-          setGitagorasDialogues(["Un momento..."]);
+          setGitagorasDialogues(GITAGORAS_FALLBACK);
           setShowGitagoras(true);
-          generateGitagorasDialogues();
         } else {
           onEnterZone?.(activeZone.id);
         }
@@ -335,28 +285,42 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
 
   }, [fontReady, onEnterZone]);
 
+  // Typing effect para diálogos de Gitágoras
   useEffect(() => {
-    if (!showGitagoras) return;
+    if (!showGitagoras || gitagorasTyping) return;
+
+    const text = gitagorasDialogues[gitagorasIndex];
+    if (!text) return;
+
     setGitagorasTyped("");
     setGitagorasTyping(true);
+
     let i = 0;
-    const text = gitagorasDialogues[gitagorasIndex] || "";
     const interval = setInterval(() => {
-      i += 1;
-      setGitagorasTyped(text.slice(0, i));
-      if (i >= text.length) {
-        clearInterval(interval);
+      if (i < text.length) {
+        setGitagorasTyped(text.slice(0, i + 1));
+        i++;
+      } else {
         setGitagorasTyping(false);
+        clearInterval(interval);
       }
     }, 30);
+
     return () => clearInterval(interval);
   }, [showGitagoras, gitagorasIndex, gitagorasDialogues]);
 
   const handleGitagorasContinue = () => {
+    if (gitagorasTyping) {
+      setGitagorasTyped(gitagorasDialogues[gitagorasIndex]);
+      setGitagorasTyping(false);
+      return;
+    }
+
     if (gitagorasIndex < gitagorasDialogues.length - 1) {
       setGitagorasIndex(i => i + 1);
     } else {
       setShowGitagoras(false);
+      setGitagorasIndex(0);
     }
   };
 

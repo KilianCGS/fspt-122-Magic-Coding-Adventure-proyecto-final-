@@ -32,6 +32,7 @@ export default function SceneRouter() {
             );
 
 
+        case "zone_1":
         case "Alchemy_Lab":
             return (
                 <AppShell onExit={goToWorld}>
@@ -39,6 +40,7 @@ export default function SceneRouter() {
                 </AppShell>
             );
 
+        case "zone_2":
         case "Library":
             return (
                 <AppShell onExit={goToWorld}>
@@ -46,14 +48,16 @@ export default function SceneRouter() {
                 </AppShell>
             );
 
+        case "zone_4":
         case "Garden_Courtyard":
             return (
                 <AppShell onExit={goToWorld}>
-                    <QuizGame />
+                    <QuizGame onExit={goToWorld} />
                 </AppShell>
             );
 
 
+        case "zone_5":
         case "Study_Room":
             return <Iframe onExit={goToWorld} />;
 
