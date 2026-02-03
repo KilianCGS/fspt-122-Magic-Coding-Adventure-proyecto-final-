@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./RuneMatchGame.css";
+import RuneMatch from "../../assets/sounds/RuneMatch.mp3";
 
 const FALLBACK_PAIRS = [
   { id: 1, term: "<html>", definition: "Define el documento HTML completo" },
@@ -19,8 +20,12 @@ export default function RuneMatchGame({ onComplete }) {
   const [matched, setMatched] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const matchAudio = useRef(null);
+  const completedRef = useRef(false);
+
   useEffect(() => {
-    console.log("RuneMatchGame mounted");
+    matchAudio.current = new Audio(RuneMatch);
+
     fetch("http://localhost:5000/api/html-runes-hf")
       .then(res => {
         if (!res.ok) throw new Error('Backend not available');
@@ -41,27 +46,40 @@ export default function RuneMatchGame({ onComplete }) {
       });
   }, []);
 
-  const handleTermClick = (pair) => {
+
+  useEffect(() => {
+    if (
+      pairs.length > 0 &&
+      matched.length === pairs.length &&
+      !completedRef.current
+    ) {
+      completedRef.current = true;
+      onComplete?.();
+    }
+  }, [matched, pairs, onComplete]);
+
+  const handleTermClick = pair => {
     if (matched.includes(pair.id)) return;
     setSelectedTerm(pair);
   };
 
-  const handleDefClick = (pair) => {
+  const handleDefClick = pair => {
     if (!selectedTerm) return;
 
     if (pair.id === selectedTerm.id) {
-      setMatched(prev => [...prev, pair.id]);
+      matchAudio.current.currentTime = 0;
+      matchAudio.current.play();
 
-      if (matched.length + 1 === pairs.length) {
-        onComplete?.();
-      }
+      setMatched(prev =>
+        prev.includes(pair.id) ? prev : [...prev, pair.id]
+      );
     }
 
     setSelectedTerm(null);
   };
 
   if (loading) {
-    return <div className="rune-game">Cargando runas mágicas...</div>;
+    return <div className="rune-gameLoader">Cargando runas mágicas...</div>;
   }
 
   return (

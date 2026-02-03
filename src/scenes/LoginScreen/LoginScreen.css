@@ -241,3 +241,8 @@ button {
 .overlay::before {
   pointer-events: none;
 }
+.logout-btn {
+  margin-top: 12px;
+  background: #ff5c5c;
+  color: white;
+}

@@ -8,6 +8,8 @@ import ZoneManager from "./core/world/ZoneManager";
 
 import "./WorldScene.css";
 
+
+
 import bgImageSrc from "./assets/bg_world.png";
 import studentMageSprite from "./assets/student_mage.png";
 import navMaskSrc from "./assets/nav_mask.png";
@@ -19,8 +21,6 @@ import interactSoundSrc from "./assets/sounds/interact.mp3";
 
 const BASE_WIDTH = 1480;
 const BASE_HEIGHT = 982;
-const PARTICLE_COUNT = 60;
-const SPARK_COUNT = 24;
 
 const GITAGORAS_FALLBACK = [
   "Ocupado debuggeando hechizos antiguos.",
@@ -29,13 +29,13 @@ const GITAGORAS_FALLBACK = [
   "Ocupado con stack overflow en mis runas."
 ];
 
-export default function WorldScene({ stackId, onBack, onEnterZone }) {
+export default function WorldScene({ onBack, onEnterZone }) {
   const canvasRef = useRef(null);
   const [scale, setScale] = useState(1);
   const [fontReady, setFontReady] = useState(false);
 
   const [showGitagoras, setShowGitagoras] = useState(false);
-  const [gitagorasDialogues, setGitagorasDialogues] = useState(GITAGORAS_FALLBACK);
+  const [gitagorasDialogues] = useState(GITAGORAS_FALLBACK);
   const [gitagorasIndex, setGitagorasIndex] = useState(0);
   const [gitagorasTyped, setGitagorasTyped] = useState("");
   const [gitagorasTyping, setGitagorasTyping] = useState(false);
@@ -101,7 +101,7 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
   };
 
   useEffect(() => {
-    const updateScale = () => {
+    const updateScale = () =>
       setScale(
         Math.min(
           window.innerWidth / BASE_WIDTH,
@@ -109,7 +109,7 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
           1
         )
       );
-    };
+
     updateScale();
     window.addEventListener("resize", updateScale);
     return () => window.removeEventListener("resize", updateScale);
@@ -118,8 +118,9 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
   useEffect(() => {
     document.fonts
       .load("16px 'Press Start 2P'")
-      .then(() => setFontReady(true));
+      .finally(() => setFontReady(true));
   }, []);
+
 
   useEffect(() => {
     if (!fontReady) return;
@@ -152,32 +153,6 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
     let wasInteractPressed = false;
     let dialogueStartTime = 0;
 
-    const particles = Array.from({ length: PARTICLE_COUNT }, () => ({
-      x: Math.random() * BASE_WIDTH,
-      y: Math.random() * BASE_HEIGHT,
-      r: 1 + Math.random() * 2,
-      speed: 10 + Math.random() * 20,
-      phase: Math.random() * Math.PI * 2
-    }));
-
-    function createSpark(cx, cy) {
-      const a = Math.random() * Math.PI * 2;
-      const s = 30 + Math.random() * 40;
-      return {
-        x: cx,
-        y: cy,
-        vx: Math.cos(a) * s,
-        vy: Math.sin(a) * s,
-        life: 0.4,
-        maxLife: 0.4,
-        size: 1 + Math.random()
-      };
-    }
-
-    const sparks = Array.from({ length: SPARK_COUNT }, () =>
-      createSpark(BASE_WIDTH / 2, BASE_HEIGHT / 2)
-    );
-
     Promise.all([
       new Promise(r => (background.onload = r)),
       new Promise(r => (playerImage.onload = r)),
@@ -201,50 +176,8 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
         new Zone({ id: "zone_5", type: "5", x: 720, y: 600, width: 50, height: 50 })
       ];
 
-      zoneManager = new ZoneManager(zones);
       requestAnimationFrame(loop);
     });
-
-    function drawParticles(dt) {
-      ctx.fillStyle = "rgba(255,255,255,0.6)";
-      particles.forEach(p => {
-        p.y -= p.speed * dt;
-        p.x += Math.sin(p.phase += 0.01) * 0.2;
-        if (p.y < -10) {
-          p.y = BASE_HEIGHT + 10;
-          p.x = Math.random() * BASE_WIDTH;
-        }
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
-      });
-    }
-
-    function updateSparks(dt) {
-      const cx =
-        player.position.x + (player.spriteWidth * player.scale) / 2;
-      const cy =
-        player.position.y + player.spriteHeight * player.scale * 0.8;
-
-      sparks.forEach((s, i) => {
-        s.x += s.vx * dt;
-        s.y += s.vy * dt;
-        s.life -= dt;
-        if (s.life <= 0) {
-          sparks[i] = createSpark(cx, cy);
-        }
-      });
-    }
-
-    function drawSparks() {
-      sparks.forEach(s => {
-        const a = Math.max(s.life / s.maxLife, 0);
-        ctx.fillStyle = `rgba(200,235,255,${a})`;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-        ctx.fill();
-      });
-    }
 
     function drawDialogue(ts) {
       const t = Math.min((ts - dialogueStartTime) / 250, 1);
@@ -291,15 +224,10 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
       ctx.clearRect(0, 0, BASE_WIDTH, BASE_HEIGHT);
       ctx.drawImage(background, 0, 0);
 
-      drawParticles(dt);
-
       const inputState = input.getState();
       const next = player.calculateNextPosition(inputState, dt);
       player.applyPosition(next);
       player.updateAnimation(dt, next.moving);
-
-      updateSparks(dt);
-      drawSparks();
 
       const feet = player.getFeetPosition();
       const transition = zoneManager.update(feet.x, feet.y);
@@ -352,7 +280,6 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
 
       requestAnimationFrame(loop);
     }
-
   }, [fontReady, onEnterZone]);
 
   // Typing effect para diálogos de Gitágoras
@@ -396,7 +323,10 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
 
   return (
     <div className="worldscene-root">
-      <div className="worldscene-scale" style={{ transform: `scale(${scale})` }}>
+      <div
+        className="worldscene-scale"
+        style={{ transform: `scale(${scale})` }}
+      >
         <div className="worldscene-container">
           <canvas
             ref={canvasRef}
@@ -439,4 +369,5 @@ export default function WorldScene({ stackId, onBack, onEnterZone }) {
       </div>
     </div>
   );
+
 }

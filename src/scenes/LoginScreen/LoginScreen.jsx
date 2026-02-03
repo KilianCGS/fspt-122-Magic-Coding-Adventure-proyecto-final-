@@ -11,6 +11,9 @@ import { useIdle } from "../../context/IdleContext";
 import idleSound from "../../assets/sounds/mensaje-carol.mp3"
 import { TimeProvider } from "../../context/TimeContext.jsx"
 
+
+
+
 const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
 
     const [mode, setMode] = useState(null);
@@ -21,8 +24,6 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
     const [idleMensaje, setIdleMensaje] = useState(null);
 
 
-    const [user, setUser] = useState(null);
-    const [avatar, setAvatar] = useState(null);
 
 
     const [formData, setFormData] = useState({
@@ -52,45 +53,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
 
     }, [isIdle])
 
-    useEffect(() => {
-        const fetchMe = async () => {
-            const token = localStorage.getItem("token");
-            if (!token) return;
-            try {
-                const res = await fetch("http://127.0.0.1:5000/api/me", {
 
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                if (!res.ok) return;
-
-                const data = await res.json();
-                setAvatar({
-                    muneco,
-                    fondo: fondo1,
-                    ...data.avatar
-                });
-                setUser(data);
-                onLogin?.(me.username);
-
-            } catch (err) {
-                console.error("error cargando usuario", err);
-            }
-        }
-
-        fetchMe();
-    }, []);
-
-    useEffect(() => {
-        if (!loggedIn) {
-            setUser(null);
-            setAvatar(null);
-            setShowUserPanel(false)
-            setShowAvatarCreator(false);
-            setMode(null)
-        }
-    }, [loggedIn])
 
 
     const handleChange = (e) => {
@@ -106,7 +69,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
         }
 
         try {
-            const res = await fetch("http://127.0.0.1:3001/api/register", {
+            const res = await fetch("http://127.0.0.1:5000/api/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -133,37 +96,32 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
         e.preventDefault();
 
         try {
-            const res = await fetch("http://127.0.0.1:3001/api/login", {
+            const res = await fetch("http://127.0.0.1:5000/api/login", {
                 method: "POST",
-                headers: { "Content-type": "application/json" },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     username: formData.username,
                     password: formData.password,
                 }),
             });
 
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(text);
+            }
+
             const data = await res.json();
-            if (!res.ok) throw new Error(data.msg);
+
 
             localStorage.setItem("token", data.access_token);
-
-            const meRes = await fetch("http://127.0.0.1:5000/api/me", {
-                headers: {
-                    Authorization: `Bearer ${data.access_token}`,
-                },
-            })
-            const me = await meRes.json();
-            setAvatar(me.avatar)
-            setUser(me);
-            onLogin?.(me.username);
+            onLogin(data.user);
             setMode(null);
 
-            setMode(null);
-            onLogin();
         } catch (err) {
             alert(err.message);
         }
     };
+
 
     return (
         <div className="login-screen" style={{ backgroundImage: `url(${LoginBackground})` }}>
@@ -175,7 +133,7 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
                         <div className="main-buttons">
                             <button onClick={() => setMode("register")}>Crear usuario</button>
                             <button onClick={() => setMode("login")}>Iniciar sesión</button>
-                            <button onClick={onQuizz} style={{ background: "#9333ea" }}>Jugar Quiz (Demo)</button>
+
                         </div>
 
                         {mode === "register" && (
@@ -257,46 +215,9 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
                         </button>
                     </div>
                 )}
-                <div
-                    className="user-badge" onClick={() => user && setShowUserPanel(true)}>
-                    {avatar ? <Avatar {...avatar} /> : <div className="user-avatar placeholder" />}
-                    <span>{user?.username}</span>
-                </div>
-
-                {showUserPanel && (
-                    <div className="user-panel-overlay">
-                        <div className="user-panel">
-                            <button className="boton-mu" onClick={() => setShowUserPanel(false)}>X</button>
-                            {avatar ? <Avatar {...avatar} /> : <div className="user-avatar-placeholder" />}
-                            <p>{user.username}</p>
-                            <button onClick={() => {
-                                setShowUserPanel(false);
-                                setShowAvatarCreator(true);
-                            }}
-                            >Editar Avatar</button>
-                        </div>
-                    </div>
-                )}
-                {showAvatarCreator && (
-                    <div className="avatar-editor-overlay">
-                        <div className="avatar-creator-modal">
-                            <AvatarCreator
-                                initialAvatar={avatar}
-                                onSave={async (newAvatar) => {
-                                    setAvatar({
-                                        muneco,
-                                        fondo: fondo1,
-                                        ...newAvatar,
-                                    });
 
 
-                                    setShowAvatarCreator(false);
-                                }}
-                                onClose={() => setShowAvatarCreator(false)}
-                            />
-                        </div>
-                    </div>
-                )}
+
 
                 <div className="footer-buttons-container">
                     <button onClick={onAbout}>About us</button>

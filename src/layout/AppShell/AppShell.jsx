@@ -7,7 +7,6 @@ import GrimorioModal from "../../Components/Grimorios/GrimorioModal";
 import "./AppShell.css";
 
 export default function AppShell({ children, onExit }) {
-    const [showAudio, setShowAudio] = useState(false);
     const [showInventory, setShowInventory] = useState(false);
     const [openGrimoire, setOpenGrimoire] = useState(null);
     const { inventory } = useInventory();
@@ -45,20 +44,7 @@ export default function AppShell({ children, onExit }) {
 
                 <SandTimer />
 
-                <div className="shell-right">
-                    <button
-                        className="audio-toggle-button"
-                        onClick={() => setShowAudio(v => !v)}
-                    >
-                        AUDIO
-                    </button>
 
-                    {showAudio && (
-                        <div className="audio-container">
-                            <Player />
-                        </div>
-                    )}
-                </div>
             </div>
 
             <div className="scene-content">{children}</div>

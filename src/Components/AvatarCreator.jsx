@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Avatar from './Avatar';
-
+import './AvatarCreator.css'
 import muneco from "../assets/images/Avatar/Avatar/Muneco.png";
 
 import ojos1 from "../assets/images/Avatar/Ojos/Ojos-1.png";
@@ -97,29 +97,43 @@ const AvatarCreator = ({ initialAvatar, onClose, onSave }) => {
 
 
 
+
+
+
+
+
     const saveAvatar = async () => {
+
         const token = localStorage.getItem("token");
+
         try {
-            const res = await fetch("http://127.0.0.1:3001/api/avatar", {
+            const res = await fetch("http://127.0.0.1:5000/api/avatar", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify(avatar)
+                body: JSON.stringify(avatar),
             });
-            if (!res.ok) throw new Error("Error al guardar avatar");
 
-            onSave({
-                ...defaultAvatar,
-                ...avatar,
-            });
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(text);
+            }
+
+
+            onSave(avatar);
+
+
             onClose();
-        } catch (err) {
-            console.error(err);
-        }
 
+        } catch (err) {
+            console.error("Error guardando avatar:", err);
+            alert("No se pudo guardar el avatar");
+        }
     };
+
+
 
     return (
         <div className="avatar-editor-layout">

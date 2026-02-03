@@ -1,8 +1,4 @@
-import { useState } from "react";
-
-import StackScreen from "../StackScreen/StackScreen";
-import WorldScene from "../WorldScenes/WorldScene";
-
+import WorldScene from "./WorldScene";
 import AlchemyZone from "../AlchemyZone/AlchemyZone";
 import LibraryZone from "../LibraryZone/LibraryZone";
 import QuizGame from "../GardenZone/QuizGame";
@@ -22,12 +18,17 @@ export default function SceneRouter() {
         case "stack":
             return <StackScreen onStart={goToWorld} />;
 
+export default function SceneRouter({ currentScene, setScene }) {
+    switch (currentScene) {
+        case "zone_1":
+            return <AlchemyZone onBack={() => setScene("world")} />;
 
         case "world":
+        default:
             return (
                 <WorldScene
-                    onBack={() => setScene("stack")}
-                    onEnterZone={goToZone}
+                    onEnterZone={(zoneId) => setScene(zoneId)}
+                    onBack={() => { }}
                 />
             );
 
