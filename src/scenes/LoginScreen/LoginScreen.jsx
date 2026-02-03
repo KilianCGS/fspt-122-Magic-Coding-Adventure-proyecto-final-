@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import "./LoginScreen.css";
 import LoginBackground from "../../assets/images/LoginScreenImage.png";
-import Avatar from "../../components/Avatar";
-import AvatarCreator from "../../components/AvatarCreator";
+import Avatar from "../../Components/Avatar";
+import AvatarCreator from "../../Components/AvatarCreator";
+import Player from "../../Components/mp3Player/mp3Player";
+import ChatBot from "../../Components/ChatBot/ChatBot";
 import muneco from "../../assets/images/Avatar/Avatar/Muneco.png";
 import fondo1 from "../../assets/images/Avatar/Fondos/Fondo-1.png";
 import { useIdle } from "../../context/IdleContext";
 import idleSound from "../../assets/sounds/mensaje-carol.mp3"
-import ChatBot from "../../Components/ChatBot/ChatBot.jsx";
 import { TimeProvider } from "../../context/TimeContext.jsx"
 
 
@@ -16,7 +17,6 @@ import { TimeProvider } from "../../context/TimeContext.jsx"
 const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
 
     const [mode, setMode] = useState(null);
-
     const [showUserPanel, setShowUserPanel] = useState(false);
     const [showAvatarCreator, setShowAvatarCreator] = useState(false);
 
@@ -26,7 +26,6 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
 
     const [user, setUser] = useState(null);
     const [avatar, setAvatar] = useState(null);
-
 
 
     const [formData, setFormData] = useState({
