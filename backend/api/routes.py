@@ -8,9 +8,15 @@ from flask_jwt_extended import (
 
 from api.models import db, User
 
+import os
+import json
+import requests
+
 api = Blueprint("api", __name__)
 
+# =========================
 # REGISTER
+# =========================
 @api.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
@@ -52,7 +58,9 @@ def register():
     }), 201
 
 
+# =========================
 # LOGIN
+# =========================
 @api.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
@@ -77,7 +85,9 @@ def login():
     }), 200
 
 
+# =========================
 # ME
+# =========================
 @api.route("/me", methods=["GET"])
 @jwt_required()
 def me():
@@ -95,7 +105,9 @@ def me():
     }), 200
 
 
+# =========================
 # AVATAR
+# =========================
 @api.route("/avatar", methods=["POST"])
 @jwt_required()
 def save_avatar():
@@ -113,3 +125,73 @@ def save_avatar():
     db.session.commit()
 
     return jsonify({"msg": "Avatar guardado"}), 200
+
+
+# =========================
+# HTML RUNES (JUEGO)
+# =========================
+@api.route("/html-runes-hf", methods=["GET"])
+def get_html_runes_hf():
+    hf_token = os.getenv("HF_API_KEY")
+
+    headers = {
+        "Authorization": f"Bearer {hf_token}",
+        "Content-Type": "application/json"
+    }
+
+    prompt = """
+Eres una API que genera datos educativos.
+Devuelve ÚNICAMENTE un JSON válido.
+
+{
+  "pairs": [
+    { "id": 1, "term": "<h1>", "definition": "Título principal del documento HTML" }
+  ]
+}
+
+Reglas:
+- EXACTAMENTE 10 pares
+- IDs del 1 al 10
+"""
+
+    payload = {
+        "inputs": prompt,
+        "parameters": {
+            "max_new_tokens": 300,
+            "temperature": 0.3
+        }
+    }
+
+    try:
+        response = requests.post(
+            "https://router.huggingface.co/hf-inference/models/mistralai/Mistral-7B-Instruct-v0.2",
+            headers=headers,
+            json=payload,
+            timeout=30
+        )
+
+        raw = response.json()
+        text = raw[0].get("generated_text", "") if isinstance(raw, list) else raw.get("generated_text", "")
+
+        start = text.find("{")
+        end = text.rfind("}") + 1
+        parsed = json.loads(text[start:end])
+
+        return jsonify(pairs=parsed["pairs"], source="huggingface")
+
+    except Exception:
+        return jsonify(
+            pairs=[
+                { "id": 1, "term": "<h1>", "definition": "Encabezado principal" },
+                { "id": 2, "term": "<p>", "definition": "Párrafo" },
+                { "id": 3, "term": "<img>", "definition": "Imagen" },
+                { "id": 4, "term": "<a>", "definition": "Enlace" },
+                { "id": 5, "term": "<body>", "definition": "Contenido visible" },
+                { "id": 6, "term": "<br>", "definition": "Salto de línea" },
+                { "id": 7, "term": "<strong>", "definition": "Texto fuerte" },
+                { "id": 8, "term": "<input>", "definition": "Entrada de datos" },
+                { "id": 9, "term": "<div>", "definition": "Contenedor" },
+                { "id": 10, "term": "<span>", "definition": "Texto en línea" }
+            ],
+            source="fallback"
+        )
