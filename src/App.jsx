@@ -70,6 +70,12 @@ function App() {
         }, 800);
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        setLoggedIn(false);
+    };
+
+
     return (
         <IdleProvider>
             <GameOverProvider>
@@ -81,7 +87,7 @@ function App() {
                             <LoginScreen
                                 loggedIn={loggedIn}
                                 onLogin={() => setLoggedIn(true)}
-                                onLogout={() => setLoggedIn(false)}
+                                onLogout={handleLogout}
                                 onAbout={() => setShowAbout(true)}
                                 onStartGame={() => setInGame(true)}
                             />

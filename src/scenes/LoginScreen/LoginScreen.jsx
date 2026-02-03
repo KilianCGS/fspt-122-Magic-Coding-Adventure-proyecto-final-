@@ -139,35 +139,39 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
         try {
             const res = await fetch("http://127.0.0.1:5000/api/login", {
                 method: "POST",
-                headers: { "Content-type": "application/json" },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     username: formData.username,
                     password: formData.password,
                 }),
             });
 
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(text);
+            }
+
             const data = await res.json();
-            if (!res.ok) throw new Error(data.msg);
+
 
             localStorage.setItem("token", data.access_token);
 
-            const meRes = await fetch("http://127.0.0.1:5000/api/me", {
-                headers: {
-                    Authorization: `Bearer ${data.access_token}`,
-                },
-            })
-            const me = await meRes.json();
-            setAvatar(me.avatar)
-            setUser(me);
-            onLogin?.(me.username);
+
+            setUser(data.user);
+            setAvatar({
+                muneco,
+                fondo: fondo1,
+                ...data.user.avatar,
+            });
+
+            onLogin?.(data.user.username);
             setMode(null);
 
-            setMode(null);
-            onLogin();
         } catch (err) {
             alert(err.message);
         }
     };
+
 
     return (
         <div className="login-screen" style={{ backgroundImage: `url(${LoginBackground})` }}>
@@ -273,15 +277,24 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
                             <button className="boton-mu" onClick={() => setShowUserPanel(false)}>X</button>
                             {avatar ? <Avatar {...avatar} /> : <div className="user-avatar-placeholder" />}
                             <p>{user?.username}</p>
-                            <button onClick={() => {
-                                setShowUserPanel(false);
-                                setShowAvatarCreator(true);
-                            }}
-                            >Editar Avatar</button>
+                            <button
+                                disabled={!user}
+                                onClick={() => {
+                                    if (!user) return;
+                                    setShowUserPanel(false);
+                                    setShowAvatarCreator(true);
+                                }}
+                            >
+                                Editar Avatar
+                            </button>
+
+
+
+
                         </div>
                     </div>
                 )}
-                {showAvatarCreator && (
+                {showAvatarCreator && user && (
                     <div className="avatar-editor-overlay">
                         <div className="avatar-creator-modal">
                             <AvatarCreator
