@@ -103,10 +103,10 @@ const AvatarCreator = ({ initialAvatar, onClose, onSave }) => {
 
 
     const saveAvatar = async () => {
-
         const token = localStorage.getItem("token");
+
         try {
-            const res = await fetch("http://localhost:5000/api/avatar", {
+            const res = await fetch("http://127.0.0.1:5000/api/avatar", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -115,21 +115,23 @@ const AvatarCreator = ({ initialAvatar, onClose, onSave }) => {
                 body: JSON.stringify(avatar),
             });
 
-            if (res.ok) {
-                onSave(avatar);
-
-            } else {
-                console.error("No se pudo guardar avatar");
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(text);
             }
-        } catch (err) {
-            console.error("Error de red", err);
 
-        } finally {
+
+            onSave(avatar);
+
+
             onClose();
+
+        } catch (err) {
+            console.error("Error guardando avatar:", err);
+            alert("No se pudo guardar el avatar");
         }
-
-
     };
+
 
 
     return (

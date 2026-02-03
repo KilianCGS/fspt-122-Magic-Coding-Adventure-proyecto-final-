@@ -286,6 +286,17 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
                                 }}
                             >
                                 Editar Avatar
+
+                            </button>
+                            <button
+                                className="logout-btn"
+                                onClick={() => {
+                                    localStorage.removeItem("token");
+                                    setShowUserPanel(false);
+                                    onLogout();
+                                }}
+                            >
+                                Cerrar sesión
                             </button>
 
 
