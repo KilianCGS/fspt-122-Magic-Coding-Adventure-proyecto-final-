@@ -286,6 +286,20 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
                                 }}
                             >
                                 Editar Avatar
+<<<<<<< new-eva
+
+                            </button>
+                            <button
+                                className="logout-btn"
+                                onClick={() => {
+                                    localStorage.removeItem("token");
+                                    setShowUserPanel(false);
+                                    onLogout();
+                                }}
+                            >
+                                Cerrar sesión
+=======
+>>>>>>> Main-Branch
                             </button>
 
 
