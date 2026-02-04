@@ -95,7 +95,8 @@ def me():
         "id": user.id,
         "username": user.username,
         "email": user.email,
-        "avatar": user.avatar
+        "avatar": user.avatar,
+        
     }), 200
 
 
@@ -120,19 +121,20 @@ def save_avatar():
 @api.route("/sign-scroll", methods=["POST"])
 @jwt_required()
 def sign_scroll():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     user = User.query.get(user_id)
 
     if not user:
         return jsonify(msg="Usuario no encontrado"), 404
 
     if user.scroll_signed:
-        return jsonify(msg="El pergamino ya fue firmado"), 400
+        return jsonify(msg="El pergamino ya fue firmado"), 200
 
     user.scroll_signed = True
     db.session.commit()
 
-    return jsonify(msg="Pergamino firmado correctamente")
+    return jsonify(msg="Pergamino firmado correctamente"), 200
+
  
 @api.route("/html-runes-hf", methods=["GET"])
 def get_html_runes_hf():
