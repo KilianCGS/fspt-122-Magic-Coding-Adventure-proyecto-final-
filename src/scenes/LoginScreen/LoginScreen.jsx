@@ -69,15 +69,16 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
         }
 
         try {
-            const res = await fetch("http://127.0.0.1:5000/api/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    username: formData.username,
-                    password: formData.password,
-                    email: formData.email,
-                }),
-            });
+            const res = await fetch("http://localhost:5000/api/register",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        username: formData.username,
+                        password: formData.password,
+                        email: formData.email,
+                    }),
+                });
 
             const data = await res.json();
             if (!res.ok) throw new Error(data.msg);
@@ -96,7 +97,8 @@ const LoginScreen = ({ onLogin, loggedIn, onStartGame, onLogout, onAbout }) => {
         e.preventDefault();
 
         try {
-            const res = await fetch("http://127.0.0.1:5000/api/login", {
+            const res = await fetch("http://localhost:5000/api/register", {
+
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
